@@ -75,8 +75,8 @@ require([
       })
 
       var template = {
-        title: 'caf2_auction_cam_auction_cbg_geom',
-        content: '<ul style="margin-top: 0"><li>cbg_fips = {cbg_fips}</li><li>reserve_price = {reserve_price}</li><li>locations = {locations}</li><ul>'
+        title: '{Tour} Stop Details',
+        content: '<ul style="margin-top: 0"><li>City = {City}</li><li>State = {State}</li><li><a href={Link}</a></li><ul>'
       }
 
       // Create feature layers
@@ -89,6 +89,7 @@ require([
 
         // Add tile layers to map
       map.add(fLayer)
+      map.add(tileLayer)
 
         // bind radio button event
         // var radios = document.layerControl.layerOpts;
