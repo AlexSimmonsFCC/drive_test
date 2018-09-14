@@ -86,7 +86,7 @@ require([
 
       // Create feature layers
       var fLayer = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/VisitedStates/FeatureServer',
+        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/VisitedStates/FeatureServer/0?token=YAnkkFUvC7X-oa3y_GLl4Vvu6mzao5h6dEXg0VJ9WiauySlP1DbLm4YVvqRS4SJiMgDqkE8ZGSq5OfkSKPb8S6JG9jSNhKMgT725KY2DwlYlFBKmG6-_ntfEKM6TOt4uHMFrqSO0POPxZX5MePGDR-S2fXU2i8r6Hu1WbiYM_rncZpQKKjwTuih7_A_S3WNFTm-HdgC-3IYpAbfyfq76ZoBoby6ZK3NWTyOomCQI_wAMycVQWQ0tKbZL-RSyObIMKdo9uXL09b2j9mSVRywZxQ..',
         outFields: ['*']
       })
 
