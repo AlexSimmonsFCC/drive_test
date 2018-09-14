@@ -86,7 +86,7 @@ require([
 
       // Create feature layers
       var fLayer = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/CAF2_Auction_CGB_Data_30jan18/FeatureServer',
+        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/VisitedStates/FeatureServer',
         outFields: ['*']
       })
 
