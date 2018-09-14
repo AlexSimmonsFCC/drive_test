@@ -95,6 +95,7 @@ require([
         // Add tile layers to map
       map.add(fLayerStates)
       map.add(fLayerStops)
+      map.add(tileLayer)
       
 
         // bind radio button event
