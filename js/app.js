@@ -88,15 +88,14 @@ require([
       var fLayerStops = new FeatureLayer({
         url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TourStops/FeatureServer/0?token=jJw0ErN_O-9fblQXCD2vnHoyJ02VQMSEoQ1lP-fjl62jSYl2RwiQ00CFVw9t9_iCAXOqttTkk9IFJr8KXJa8DRAu-zoVL0DATc_KQwSCPVE5s07-EuvhVuRXCAmhuN9hQus-HQGuzXRyOWRxLc6KuwNA5O6ex6yTDDx3J3p2HEdmLBv0i7FW7CS9zjD6o4b06p1FrXabjRTGcXZy6AGYJcI4lNRawkBa_dvuYvwJNqh_pTOx7vtvazDgPyvfzqyePHQ1I0A3VkchKO9mqsWuHw..',
         outFields: ['*']
-
+      })
 
       fLayerStops.popupTemplate = template
 
         // Add tile layers to map
-      
+      map.add(fLayerStates)
       map.add(fLayerStops)
-      
-      
+      map.add(tileLayer)
 
         // bind radio button event
         // var radios = document.layerControl.layerOpts;
