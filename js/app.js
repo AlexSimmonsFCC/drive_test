@@ -37,7 +37,7 @@ require([
         container: 'map',
         map: map,
         center: [-98, 38.48],
-        zoom: 7,
+        zoom: 5,
         constraints: {
           minZoom: 4,
           maxZoom: 9,
