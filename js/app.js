@@ -76,7 +76,7 @@ require([
 
       var template = {
         title: '{Tour} Stop Details',
-        content: '<ul style="margin-top: 0"><li>City = {City}</li><li>State = {State}</li><li><a href={Link}</a></li><li><img src="{Details}" alt=""></li><ul>'
+        content: '<ul style="margin-top: 0"><li>City = {City}</li><li>State = {State}</li><li>Link = <a href={Link}>Link</a></li><li><img src="{Details}" alt=""></li><ul>'
       }
 
       // Create feature layers
