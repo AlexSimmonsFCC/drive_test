@@ -79,11 +79,6 @@ require([
         content: '<ul style="margin-top: 0"><li>cbg_fips = {cbg_fips}</li><li>reserve_price = {reserve_price}</li><li>locations = {locations}</li><ul>'
       }
 
-      // Create vector tile layer
-      var tileLayer = new VectorTileLayer({
-        url: 'https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/CAF2_Auction_Eligible_Areas_30jan18_fix/VectorTileServer/resources/styles/root.json?f=pjson'
-      })
-
       // Create feature layers
       var fLayer = new FeatureLayer({
         url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/VisitedStates/FeatureServer',
@@ -94,8 +89,7 @@ require([
 
         // Add tile layers to map
       map.add(fLayer)
-      map.add(tileLayer)
-
+  
         // bind radio button event
         // var radios = document.layerControl.layerOpts;
         // for (var i = 0, radiosLen = radios.length; i < radiosLen; i++) {
