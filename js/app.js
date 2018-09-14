@@ -93,9 +93,7 @@ require([
       fLayerStops.popupTemplate = template
 
         // Add tile layers to map
-      map.add(fLayerStates)
-      map.add(fLayerStops)
-      map.add(tileLayer)
+     map.addMany([fLayerStates,fLayerStops])
 
         // bind radio button event
         // var radios = document.layerControl.layerOpts;
