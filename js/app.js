@@ -90,10 +90,15 @@ require([
         outFields: ['*']
       })
 
+      var fLayerLines = new FeatureLayer({
+        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TripLines/FeatureServer/0?token=3rFkNxQ1qHMoSKDAfMVKEVzTN3R7AYu7ysXoSsTqcsokIdJUk894pTtap6hqHQ0Jsvojd5Ishiwxf6-u1l9coI4XSoZ_y7RUsjVP7t1BIS-7JJ4d20aOPhwaC9jhsUQV11MN3ZcJZA0PSVe-pWOycTQ0srCCeeITlva9smWOuOdMNPb4fRiAKL2HjqG93LSrQuGXrFGIw1aCIlfFX8eP3f1EuNhOirzsYQUCSCv_1HYZpyFN3PtM6yzBxR67mVPknJdi8p1p_K2T87xfPnCP3A..',
+        outFields: ['*']
+      })
+      
       fLayerStops.popupTemplate = template
 
         // Add tile layers to map
-     map.addMany([fLayerStates,fLayerStops])
+     map.addMany([fLayerStates,fLayerStops,fLayerLines])
 
         // bind radio button event
         // var radios = document.layerControl.layerOpts;
