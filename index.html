@@ -1,90 +1,137 @@
-<!DOCTYPE html>
-<html>
+require([
+  'esri/Map',
+  'esri/views/MapView',
+  'esri/Basemap',
+  'esri/layers/VectorTileLayer',
+  'esri/layers/FeatureLayer',
+  'esri/layers/WebTileLayer',
+  'esri/widgets/Search',
+  'esri/widgets/Home',
+  'esri/widgets/Locate'
+],
+    function (Map, MapView, Basemap, VectorTileLayer, FeatureLayer, WebTileLayer, Search, Home, Locate) {
+      var map, view, searchWidget, homeBtn, locateBtn
+      var layers = window.layers
+      var featLayers = []
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-    <title>Brigding the Digital Divide Trips</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
-    <link rel="stylesheet" href="css/styles.css">
-</head>
+        // Create base layer from Mapbox street layer
+      var mapBaseLayer = new WebTileLayer({
+        urlTemplate: 'https://{subDomain}.tiles.mapbox.com/v4/fcc.k74ed5ge/{level}/{col}/{row}.png?access_token=pk.eyJ1IjoiZmNjIiwiYSI6InBiaGMyLU0ifQ.LOmVYpUCFv2yWpbvxDdQNg',
+        subDomains: ['a', 'b', 'c', 'd'],
+        copyright: '\u00A9 OpenStreetMap contributors Design \u00A9 Mapbox'
+      })
 
-<body>
-    <main class="map-container">
-        <div id="btn-openLayerCtrl" class="esri-ui-corner">
-            <div class="icon-layers esri-component esri-widget-button esri-widget"></div>
-        </div>        
-        <div id="map"></div>
-        <div class="map-legend">
-            <table>
-                <thead>
-                    <tr>
-                        <td colspan="3"><span class="icon icon-list"></span> <span class="map-legend-name">Bridging the Digital Divide Tour</span>
-                            <button id="btn-closeLegend" class="btn btn-xs pull-right"><span class="icon icon-close"></span> <span class="sr-only">Hide legend</span></button>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#ED5151"></div>
-                        </td>
-                        <td>Gulf Coast Trip, April 30-May 1</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#149ECE "></div>
-                        </td>
-                        <td>Midwest Trip, September 19-22</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#A7C636 "></div>
-                        </td>
-                        <td>Pacific NW Trip, June 18-23</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#9E559C"></div>
-                        </td>
-                        <td>Piedmont Trip, May 21-25</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#FC921F"></div>
-                        </td>
-                        <td>AR, TN, KY Trip, April 3-6</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#FFDE3E"></div>
-                        </td>
-                        <td>Four Corners Trip, August 20-21</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#F789D8"></div>
-                        </td>
-                        <td>Arizona and Nevada Trip, Aug 20-22</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#B7814A"></div>
-                        </td>
-                        <td>Mid-Atlantic Trip, July 10</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <button id="btn-openLegend" class="btn legend__icon" title="Map Legend"><span class="icon icon-list"></span></button>
-    </main>
-    
-    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script>
-    window.jQuery || document.write('<script src="../js/vendor/jquery-1.11.2.min.js"><\/script>')
-    </script>
-    <script src="https://js.arcgis.com/4.3/"></script>
-    <script src="js/app.js"></script>
-</body>
+        // Create base map from Mapbox layer
+      var mapBox = new Basemap({
+        baseLayers: [mapBaseLayer],
+        title: 'Street'
+      })
 
-</html>
+        // Create map
+      map = new Map({
+        basemap: mapBox
+      })
+
+        // Make map view and bind it to the map
+      view = new MapView({
+        container: 'map',
+        map: map,
+        center: [-98, 38.48],
+        zoom: 4,
+        constraints: {
+          minZoom: 4,
+          maxZoom: 9,
+          rotationEnabled: false
+        }
+      })
+
+        // Add search widget
+      searchWidget = new Search({
+        view: view
+      })
+
+        // Position search widget
+      view.ui.add(searchWidget, {
+        position: 'top-right',
+        index: 2
+      })
+
+        // Add Home widget
+      homeBtn = new Home({
+        view: view
+      })
+
+        // Position Home widget
+      view.ui.add(homeBtn, 'top-left')
+
+        // Add locate widget
+      locateBtn = new Locate({
+        view: view
+      })
+
+        // Position locate widget
+      view.ui.add(locateBtn, {
+        position: 'top-left'
+      })
+
+      var template = {
+        title: '{Tour} Stop Details',
+        content: '<ul style="margin-top: 0"><li>City = {City}</li><li>State = {State}</li><li><a href={Link}</a></li><ul>'
+      }
+
+      // Create feature layers
+      var fLayer = new FeatureLayer({
+        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/VisitedStates/FeatureServer/0?token=YAnkkFUvC7X-oa3y_GLl4Vvu6mzao5h6dEXg0VJ9WiauySlP1DbLm4YVvqRS4SJiMgDqkE8ZGSq5OfkSKPb8S6JG9jSNhKMgT725KY2DwlYlFBKmG6-_ntfEKM6TOt4uHMFrqSO0POPxZX5MePGDR-S2fXU2i8r6Hu1WbiYM_rncZpQKKjwTuih7_A_S3WNFTm-HdgC-3IYpAbfyfq76ZoBoby6ZK3NWTyOomCQI_wAMycVQWQ0tKbZL-RSyObIMKdo9uXL09b2j9mSVRywZxQ..',
+        outFields: ['*']
+      })
+
+      fLayer.popupTemplate = template
+
+        // Add tile layers to map
+      map.add(fLayer)
+      map.add(tileLayer)
+
+        // bind radio button event
+        // var radios = document.layerControl.layerOpts;
+        // for (var i = 0, radiosLen = radios.length; i < radiosLen; i++) {
+        //     radios[i].onchange = function() {
+        //         updateLayerVisibility(this.value);
+        //     };
+        // }
+
+        // toggle layer visibility
+        // function updateLayerVisibility(indx) {
+
+        //     for (var i = 0; i < featLayers.length; i++) {
+        //         featLayers[i].visible = false;
+        //     }
+
+        //     featLayers[indx].visible = true;
+
+        // }
+
+        // set default layer to visible
+        // updateLayerVisibility(0);
+
+        // toggle legend display
+      $('#btn-closeLegend').on('click', function (e) {
+        e.preventDefault()
+        $('.map-legend').hide('fast')
+      })
+
+      $('#btn-openLegend').on('click', function (e) {
+        e.preventDefault()
+        $('.map-legend').show('fast')
+      })
+
+        // toggle layer control display
+      $('#btn-closeLayerCtrl').on('click', function (e) {
+        e.preventDefault()
+        $('.layer-control').hide('fast')
+      })
+
+      $('#btn-openLayerCtrl').on('click', function (e) {
+        e.preventDefault()
+        $('.layer-control').show('fast')
+      })
+    })
