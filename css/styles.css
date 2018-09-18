@@ -14,6 +14,15 @@ body,
     width: 100%;
 }
 
+#info {
+      background-color: black;
+      opacity: 0.75;
+      color: orange;
+      font-size: 18pt;
+      padding: 8px;
+      visibility: hidden;
+    }
+
 .btn {
     display: inline-block;
     margin-bottom: 0;
