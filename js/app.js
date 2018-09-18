@@ -132,13 +132,14 @@ var fLayerStops = new FeatureLayer({
           })[0].graphic;
 
           var attributes = graphic.attributes;
-          var state = attributes.STATE;
-          var city = attributes.CITY;
-          var link = attributes.LINK;
+          var state = attributes.State;
+          var city = attributes.City;
+          var link = attributes.Link;
 
           document.getElementById("info").style.visibility = "visible";
-          document.getElementById("state").innerHTML = "St8: " + state;
-          document.getElementById("city").innerHTML = "City:  " + city;
+          document.getElementById("State").innerHTML = "St8: " + state;
+          document.getElementById("City").innerHTML = "City:  " + city;
+          document.getElementById("Link").innerHTML = "Link:  " + link;
 
           // symbolize all line segments with the given
           // storm name with the same symbol
