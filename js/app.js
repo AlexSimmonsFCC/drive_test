@@ -112,7 +112,7 @@ require([
         if (response.results.length) {
           var graphic = response.results.filter(function(result) {
             return result.graphic.layer === fLayerStops;
-          }[0].graphic;
+          }}}[0].graphic;
 
           var attributes = graphic.attributes;
           var state = attributes.state;
