@@ -99,30 +99,72 @@ require([
         outFields: ['*']
       })
 
-      //Pointer Event Handler
+
+
+
+
+
+
+ // Set up an event handler for pointer-down (mobile)
+      // and pointer-move events (mouse)
+      // and retrieve the screen x, y coordinates
       view.on("pointer-move", eventHandler);
       view.on("pointer-down", eventHandler);
 
-      //Hit Test Check
       function eventHandler(event) {
+        // the hitTest() checks to see if any graphics in the view
+        // intersect the given screen x, y coordinates
         view.hitTest(event)
           .then(getGraphics);
       }
-   
+
       function getGraphics(response) {
+        // the topmost graphic from the hurricanesLayer
+        // and display select attribute values from the
+        // graphic to the user
         if (response.results.length) {
           var graphic = response.results.filter(function(result) {
             return result.graphic.layer === fLayerStops;
-          }}}[0].graphic;
+          })[0].graphic;
 
           var attributes = graphic.attributes;
-          var state = attributes.state;
-          var city = attributes.city;
-          
+          var state = attributes.STATE;
+          var city = attributes.CITY;
+          var link = attributes.LINK;
+
           document.getElementById("info").style.visibility = "visible";
           document.getElementById("state").innerHTML = "State: " + state;
-          document.getElementById("city").innerHTML = "City: " + category;
-     
+          document.getElementById("category").innerHTML = "City:  " + city;
+          document.getElementById("wind").innerHTML = wind + " kts";
+
+          // symbolize all line segments with the given
+          // storm name with the same symbol
+          var renderer = {
+            type: "unique-value", // autocasts as new UniqueValueRenderer()
+            field: "STATE",
+            defaultSymbol: fLayerStops.renderer.symbol ||
+              fLayerStops.renderer.defaultSymbol,
+            uniqueValueInfos: [{
+              value: state,
+              symbol: {
+                type: "simple-marker", // autocasts as new SimpleLineSymbol()
+                style: "square"
+                color: "blue",
+                size: "10px",
+                cap: "round",
+                outline: { color: [255, 255, 0], width: 3}
+              }
+            }]
+          };
+          fLayerStops.renderer = renderer;
+        }
+      }
+
+
+
+
+
+
 
 
         // Add tile layers to map
@@ -149,4 +191,4 @@ require([
         e.preventDefault()
         $('.layer-control').show('fast')
       })
-    }}})
+    })
