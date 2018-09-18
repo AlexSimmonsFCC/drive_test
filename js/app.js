@@ -134,7 +134,7 @@ require([
 
           document.getElementById("info").style.visibility = "visible";
           document.getElementById("state").innerHTML = "State: " + state;
-          document.getElementById("category").innerHTML = "City:  " + city;
+          document.getElementById("city").innerHTML = "City:  " + city;
 
           // symbolize all line segments with the given
           // storm name with the same symbol
