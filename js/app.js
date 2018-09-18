@@ -9,7 +9,8 @@ require([
   'esri/widgets/Home',
   'esri/widgets/Locate'
 ],
-    function (Map, MapView, Basemap, VectorTileLayer, FeatureLayer, WebTileLayer, Search, Home, Locate) {
+    function (Map, MapView, Basemap, VectorTileLayer, FeatureLayer, WebTileLayer, Search, Home, Locate, Graphic
+              SimpleRenderer, SimpleFillSymbol, SimlpeLineSymbol, esriLang, Color, number, domStyle, TooltipDialog, dijitPop) {
       var map, view, searchWidget, homeBtn, locateBtn
       var layers = window.layers
       var featLayers = []
@@ -74,43 +75,100 @@ require([
         position: 'top-left'
       })
 
+
+      // Add Pop Up Template
       var template = {
-        title: 'caf2_auction_cam_auction_cbg_geom',
-        content: '<ul style="margin-top: 0"><li>cbg_fips = {cbg_fips}</li><li>reserve_price = {reserve_price}</li><li>locations = {locations}</li><ul>'
+        title: '{Tour} Stop Details',
+        content: '<ul style="margin-top: 0"><li>City = {City}</li><li>State = {State}</li><li><a href={Link}>Link</a></li><li><img src="{Details}" alt=""></li><ul>'
       }
 
       // Create feature layers
-      var fLayer = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/VisitedStates/FeatureServer/0?token=CFUMJwW8jAODEKGsgMI-eFtSxjp99JZIO4CRSad2vgRQImov3BcyDVWEa__bjZsJ9UECiGf7GWqZGjwTkWtNgNGk3-c9CiA_qbOlwFE-C8jywu_m8SN6p3-RcwC35t1IfxrSjOdGeAjDuagPGn6M2m32yUM3BYX3Jsk2I-U6oCQjyaRhD8S8md4YXeC1RFhhXbuyXgLBXLrJTFsvjDc27gsEANZmltwE2CNJ69YxKQG-WDgZaVXHGZKxlUXcdGMkFM6bPKnAN_D_PMZeolEUpQ..',
+      var fLayerStates = new FeatureLayer({
+        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/VisitedStates/FeatureServer/0?token=YAnkkFUvC7X-oa3y_GLl4Vvu6mzao5h6dEXg0VJ9WiauySlP1DbLm4YVvqRS4SJiMgDqkE8ZGSq5OfkSKPb8S6JG9jSNhKMgT725KY2DwlYlFBKmG6-_ntfEKM6TOt4uHMFrqSO0POPxZX5MePGDR-S2fXU2i8r6Hu1WbiYM_rncZpQKKjwTuih7_A_S3WNFTm-HdgC-3IYpAbfyfq76ZoBoby6ZK3NWTyOomCQI_wAMycVQWQ0tKbZL-RSyObIMKdo9uXL09b2j9mSVRywZxQ..',
         outFields: ['*']
       })
 
-      fLayer.popupTemplate = template
+      var fLayerStops = new FeatureLayer({
+        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TourStops/FeatureServer/0?token=jJw0ErN_O-9fblQXCD2vnHoyJ02VQMSEoQ1lP-fjl62jSYl2RwiQ00CFVw9t9_iCAXOqttTkk9IFJr8KXJa8DRAu-zoVL0DATc_KQwSCPVE5s07-EuvhVuRXCAmhuN9hQus-HQGuzXRyOWRxLc6KuwNA5O6ex6yTDDx3J3p2HEdmLBv0i7FW7CS9zjD6o4b06p1FrXabjRTGcXZy6AGYJcI4lNRawkBa_dvuYvwJNqh_pTOx7vtvazDgPyvfzqyePHQ1I0A3VkchKO9mqsWuHw..',
+        outFields: ['*']
+      })
+
+      var fLayerLines = new FeatureLayer({
+        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TripLines/FeatureServer/0?token=3rFkNxQ1qHMoSKDAfMVKEVzTN3R7AYu7ysXoSsTqcsokIdJUk894pTtap6hqHQ0Jsvojd5Ishiwxf6-u1l9coI4XSoZ_y7RUsjVP7t1BIS-7JJ4d20aOPhwaC9jhsUQV11MN3ZcJZA0PSVe-pWOycTQ0srCCeeITlva9smWOuOdMNPb4fRiAKL2HjqG93LSrQuGXrFGIw1aCIlfFX8eP3f1EuNhOirzsYQUCSCv_1HYZpyFN3PtM6yzBxR67mVPknJdi8p1p_K2T87xfPnCP3A..',
+        outFields: ['*']
+      })
+
+  
 
         // Add tile layers to map
-      map.add(fLayer)
-  
-        // bind radio button event
-        // var radios = document.layerControl.layerOpts;
-        // for (var i = 0, radiosLen = radios.length; i < radiosLen; i++) {
-        //     radios[i].onchange = function() {
-        //         updateLayerVisibility(this.value);
-        //     };
-        // }
+      map.addMany([fLayerStates,fLayerStops,fLayerLines])
+     
 
-        // toggle layer visibility
-        // function updateLayerVisibility(indx) {
+      // Add Line and Fill to Hover Feature
+       var symbol = new SimpleFillSymbol(
+          SimpleFillSymbol.STYLE_SOLID,
+          new SimpleLineSymbol(
+            SimpleLineSymbol.STYLE_SOLID,
+            new Color([255,255,255,0.35]),
+            1
+          ),
+          new Color([125,125,125,0.35])
+        );
+        
+        fLayerStops.setRenderer(new SimpleRenderer(symbol));
+        map.addLayer(fLayerStops);
 
-        //     for (var i = 0; i < featLayers.length; i++) {
-        //         featLayers[i].visible = false;
-        //     }
 
-        //     featLayers[indx].visible = true;
+      // Construct Hover Pop-Up Window
+      map.infoWindow.resize(245,125);
 
-        // }
+      dialog = new TooltipDialog({
+          id: "tooltipDialog",
+          style: "position: absolute; width: 250px; font: normal normal normal 10pt Helvetica;z-index:100"
+        });
+      dialog.startup();
 
-        // set default layer to visible
-        // updateLayerVisibility(0);
+      var highlightSymbol = new SimpleFillSymbol(
+          SimpleFillSymbol.STYLE_SOLID,
+          new SimpleLineSymbol(
+            SimpleLineSymbol.STYLE_SOLID,
+            new Color([255,0,0]), 3
+          ),
+          new Color([125,125,125,0.35])
+        );
+
+
+      //Close the dialog when the mouse leaves the highlight graphic
+        map.on("load", function(){
+          map.graphics.enableMouseEvents();
+          map.graphics.on("mouse-out", closeDialog);
+
+        });
+
+      fLayerStops.on("mouse-over", function(evt){
+          var t = "<b>${NAME}</b>";
+
+      var content = esriLang.substitute(evt.graphic.attributes,t);
+          var highlightGraphic = new Graphic(evt.graphic.geometry,highlightSymbol);
+          map.graphics.add(highlightGraphic);
+
+      dialog.setContent(content);
+
+          domStyle.set(dialog.domNode, "opacity", 0.85);
+          dijitPopup.open({
+            popup: dialog,
+            x: evt.pageX,
+            y: evt.pageY
+          });
+        });
+
+        function closeDialog() {
+          map.graphics.clear();
+          dijitPopup.close(dialog);
+        }
+
+      });
+
 
         // toggle legend display
       $('#btn-closeLegend').on('click', function (e) {
