@@ -37,7 +37,7 @@ require([
         container: 'map',
         map: map,
         center: [-98, 38.48],
-        zoom: 5,
+        zoom: 4,
         constraints: {
           minZoom: 4,
           maxZoom: 9,
@@ -74,9 +74,12 @@ require([
         position: 'top-left'
       })
 
+      // Add Info Region
+      view.ui.add("info", "top-right");
+
       var template = {
         title: '{Tour} Stop Details',
-        content: '<ul style="margin-top: 0"><li><strong>City:</strong> {City}</li><li><strong>State:</strong> {State}</li><li><a href={Link}>See this Trip @FCC Twitter</a></li><li><img src="{Details}" alt="" height="300" width="250"></li><ul>'
+        content: '<ul style="margin-top: 0"><li>City = {City}</li><li>State = {State}</li><li><a href={Link}>Link</a></li><li><img src="{Details}" alt=""></li><ul>'
       }
 
       // Create feature layers
@@ -94,35 +97,38 @@ require([
         url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TripLines/FeatureServer/0?token=3rFkNxQ1qHMoSKDAfMVKEVzTN3R7AYu7ysXoSsTqcsokIdJUk894pTtap6hqHQ0Jsvojd5Ishiwxf6-u1l9coI4XSoZ_y7RUsjVP7t1BIS-7JJ4d20aOPhwaC9jhsUQV11MN3ZcJZA0PSVe-pWOycTQ0srCCeeITlva9smWOuOdMNPb4fRiAKL2HjqG93LSrQuGXrFGIw1aCIlfFX8eP3f1EuNhOirzsYQUCSCv_1HYZpyFN3PtM6yzBxR67mVPknJdi8p1p_K2T87xfPnCP3A..',
         outFields: ['*']
       })
-      
-      fLayerStops.popupTemplate = template
+
+      //Pointer Event Handler
+      view.on("pointer-move", eventHandler);
+      view.on("pointer-down", eventHandler);
+
+      //Hit Test Check
+      function eventHandler(event) {
+        view.hitTest(event)
+          .then(getGraphics);
+      }
+   
+      function getGraphics(response) {
+        if (response.results.length) {
+          var graphic = response.results.filter(function(result) {
+            return result.graphic.layer === fLayerStops;
+          }[0].graphic;
+
+          var attributes = graphic.attributes;
+          var state = attributes.state;
+          var city = attributes.city;
+          
+          document.getElementById("info").style.visibility = "visible";
+          document.getElementById("state").innerHTML = "State: " + state;
+          document.getElementById("city").innerHTML = "City: " + category;
+          document.getElementById("wind").innerHTML = wind + " kts";
+
+
 
         // Add tile layers to map
-     map.addMany([fLayerStates,fLayerStops,fLayerLines])
-
-        // bind radio button event
-        // var radios = document.layerControl.layerOpts;
-        // for (var i = 0, radiosLen = radios.length; i < radiosLen; i++) {
-        //     radios[i].onchange = function() {
-        //         updateLayerVisibility(this.value);
-        //     };
-        // }
-
-        // toggle layer visibility
-        // function updateLayerVisibility(indx) {
-
-        //     for (var i = 0; i < featLayers.length; i++) {
-        //         featLayers[i].visible = false;
-        //     }
-
-        //     featLayers[indx].visible = true;
-
-        // }
-
-        // set default layer to visible
-        // updateLayerVisibility(0);
-
-        // toggle legend display
+      map.addMany([fLayerStates,fLayerStops,fLayerLines])
+     
+        
       $('#btn-closeLegend').on('click', function (e) {
         e.preventDefault()
         $('.map-legend').hide('fast')
@@ -143,4 +149,4 @@ require([
         e.preventDefault()
         $('.layer-control').show('fast')
       })
-    })
+    }}})
