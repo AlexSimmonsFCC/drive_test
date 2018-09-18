@@ -28,9 +28,16 @@ require([
         title: 'Street'
       })
 
+
+var fLayerStops = new FeatureLayer({
+        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TourStops/FeatureServer/0?token=jJw0ErN_O-9fblQXCD2vnHoyJ02VQMSEoQ1lP-fjl62jSYl2RwiQ00CFVw9t9_iCAXOqttTkk9IFJr8KXJa8DRAu-zoVL0DATc_KQwSCPVE5s07-EuvhVuRXCAmhuN9hQus-HQGuzXRyOWRxLc6KuwNA5O6ex6yTDDx3J3p2HEdmLBv0i7FW7CS9zjD6o4b06p1FrXabjRTGcXZy6AGYJcI4lNRawkBa_dvuYvwJNqh_pTOx7vtvazDgPyvfzqyePHQ1I0A3VkchKO9mqsWuHw..',
+        outFields: ['*']
+      })
+
         // Create map
       map = new Map({
-        basemap: mapBox
+        basemap: mapBox,
+        layers: [fLayerStops]
       })
 
         // Make map view and bind it to the map
@@ -89,10 +96,7 @@ require([
         outFields: ['*']
       })
 
-      var fLayerStops = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TourStops/FeatureServer/0?token=jJw0ErN_O-9fblQXCD2vnHoyJ02VQMSEoQ1lP-fjl62jSYl2RwiQ00CFVw9t9_iCAXOqttTkk9IFJr8KXJa8DRAu-zoVL0DATc_KQwSCPVE5s07-EuvhVuRXCAmhuN9hQus-HQGuzXRyOWRxLc6KuwNA5O6ex6yTDDx3J3p2HEdmLBv0i7FW7CS9zjD6o4b06p1FrXabjRTGcXZy6AGYJcI4lNRawkBa_dvuYvwJNqh_pTOx7vtvazDgPyvfzqyePHQ1I0A3VkchKO9mqsWuHw..',
-        outFields: ['*']
-      })
+      
 
       var fLayerLines = new FeatureLayer({
         url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TripLines/FeatureServer/0?token=3rFkNxQ1qHMoSKDAfMVKEVzTN3R7AYu7ysXoSsTqcsokIdJUk894pTtap6hqHQ0Jsvojd5Ishiwxf6-u1l9coI4XSoZ_y7RUsjVP7t1BIS-7JJ4d20aOPhwaC9jhsUQV11MN3ZcJZA0PSVe-pWOycTQ0srCCeeITlva9smWOuOdMNPb4fRiAKL2HjqG93LSrQuGXrFGIw1aCIlfFX8eP3f1EuNhOirzsYQUCSCv_1HYZpyFN3PtM6yzBxR67mVPknJdi8p1p_K2T87xfPnCP3A..',
@@ -133,18 +137,18 @@ require([
           var link = attributes.LINK;
 
           document.getElementById("info").style.visibility = "visible";
-          document.getElementById("state").innerHTML = "S8: " + state;
+          document.getElementById("state").innerHTML = "St8: " + state;
           document.getElementById("city").innerHTML = "City:  " + city;
 
           // symbolize all line segments with the given
           // storm name with the same symbol
-          
+         
           fLayerStops.renderer = renderer;
         }
       }
 
 
-        
+
 
      // Add tile layers to map
       map.addMany([fLayerStates,fLayerStops,fLayerLines])
