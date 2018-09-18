@@ -167,8 +167,6 @@ require([
           dijitPopup.close(dialog);
         }
 
-      });
-
 
         // toggle legend display
       $('#btn-closeLegend').on('click', function (e) {
