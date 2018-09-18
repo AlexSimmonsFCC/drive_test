@@ -138,7 +138,7 @@ require([
 
           // symbolize all line segments with the given
           // storm name with the same symbol
-          fLayerStops.popupTemplate = template
+          
           fLayerStops.renderer = renderer;
         }
       }
