@@ -125,7 +125,7 @@ require([
         if (response.results.length) {
           var graphic = response.results.filter(function(result) {
             return result.graphic.layer === fLayerStops;
-          }).graphic;
+          })[0].graphic;
 
           var attributes = graphic.attributes;
           var state = attributes.STATE;
@@ -133,7 +133,7 @@ require([
           var link = attributes.LINK;
 
           document.getElementById("info").style.visibility = "visible";
-          document.getElementById("state").innerHTML = "State: " + state;
+          document.getElementById("state").innerHTML = "S8: " + state;
           document.getElementById("city").innerHTML = "City:  " + city;
 
           // symbolize all line segments with the given
