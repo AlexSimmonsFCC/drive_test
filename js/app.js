@@ -135,27 +135,10 @@ require([
           document.getElementById("info").style.visibility = "visible";
           document.getElementById("state").innerHTML = "State: " + state;
           document.getElementById("category").innerHTML = "City:  " + city;
-          document.getElementById("wind").innerHTML = wind + " kts";
 
           // symbolize all line segments with the given
           // storm name with the same symbol
-          var renderer = {
-            type: "unique-value", // autocasts as new UniqueValueRenderer()
-            field: "STATE",
-            defaultSymbol: fLayerStops.renderer.symbol ||
-              fLayerStops.renderer.defaultSymbol,
-            uniqueValueInfos: [{
-              value: state,
-              symbol: {
-                type: "simple-marker", // autocasts as new SimpleLineSymbol()
-                style: "square"
-                color: "blue",
-                size: "10px",
-                cap: "round",
-                outline: { color: [255, 255, 0], width: 3}
-              }
-            }]
-          };
+         
           fLayerStops.renderer = renderer;
         }
       }
@@ -163,11 +146,7 @@ require([
 
 
 
-
-
-
-
-        // Add tile layers to map
+     // Add tile layers to map
       map.addMany([fLayerStates,fLayerStops,fLayerLines])
      
         
