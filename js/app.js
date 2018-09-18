@@ -7,7 +7,8 @@ require([
   'esri/layers/WebTileLayer',
   'esri/widgets/Search',
   'esri/widgets/Home',
-  'esri/widgets/Locate'
+  'esri/widgets/Locate',
+  'dojo/domReady!'
 ],
     function (Map, MapView, Basemap, VectorTileLayer, FeatureLayer, WebTileLayer, Search, Home, Locate) {
       var map, view, searchWidget, homeBtn, locateBtn
