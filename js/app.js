@@ -9,8 +9,7 @@ require([
   'esri/widgets/Home',
   'esri/widgets/Locate'
 ],
-    function (Map, MapView, Basemap, VectorTileLayer, FeatureLayer, WebTileLayer, Search, Home, Locate, Graphic
-              SimpleRenderer, SimpleFillSymbol, SimlpeLineSymbol, esriLang, Color, number, domStyle, TooltipDialog, dijitPop) {
+    function (Map, MapView, Basemap, VectorTileLayer, FeatureLayer, WebTileLayer, Search, Home, Locate) {
       var map, view, searchWidget, homeBtn, locateBtn
       var layers = window.layers
       var featLayers = []
@@ -38,7 +37,7 @@ require([
         container: 'map',
         map: map,
         center: [-98, 38.48],
-        zoom: 4,
+        zoom: 5,
         constraints: {
           minZoom: 4,
           maxZoom: 9,
@@ -75,11 +74,9 @@ require([
         position: 'top-left'
       })
 
-
-      // Add Pop Up Template
       var template = {
         title: '{Tour} Stop Details',
-        content: '<ul style="margin-top: 0"><li>City = {City}</li><li>State = {State}</li><li><a href={Link}>Link</a></li><li><img src="{Details}" alt=""></li><ul>'
+        content: '<ul style="margin-top: 0"><li><strong>City:</strong> {City}</li><li><strong>State:</strong> {State}</li><li><a href={Link}>See this Trip @FCC Twitter</a></li><li><img src="{Details}" alt="" height="300" width="250"></li><ul>'
       }
 
       // Create feature layers
@@ -97,76 +94,33 @@ require([
         url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TripLines/FeatureServer/0?token=3rFkNxQ1qHMoSKDAfMVKEVzTN3R7AYu7ysXoSsTqcsokIdJUk894pTtap6hqHQ0Jsvojd5Ishiwxf6-u1l9coI4XSoZ_y7RUsjVP7t1BIS-7JJ4d20aOPhwaC9jhsUQV11MN3ZcJZA0PSVe-pWOycTQ0srCCeeITlva9smWOuOdMNPb4fRiAKL2HjqG93LSrQuGXrFGIw1aCIlfFX8eP3f1EuNhOirzsYQUCSCv_1HYZpyFN3PtM6yzBxR67mVPknJdi8p1p_K2T87xfPnCP3A..',
         outFields: ['*']
       })
-
-  
+      
+      fLayerStops.popupTemplate = template
 
         // Add tile layers to map
-      map.addMany([fLayerStates,fLayerStops,fLayerLines])
-     
+     map.addMany([fLayerStates,fLayerStops,fLayerLines])
 
-      // Add Line and Fill to Hover Feature
-       var symbol = new SimpleFillSymbol(
-          SimpleFillSymbol.STYLE_SOLID,
-          new SimpleLineSymbol(
-            SimpleLineSymbol.STYLE_SOLID,
-            new Color([255,255,255,0.35]),
-            1
-          ),
-          new Color([125,125,125,0.35])
-        );
-        
-        fLayerStops.setRenderer(new SimpleRenderer(symbol));
-        map.addLayer(fLayerStops);
+        // bind radio button event
+        // var radios = document.layerControl.layerOpts;
+        // for (var i = 0, radiosLen = radios.length; i < radiosLen; i++) {
+        //     radios[i].onchange = function() {
+        //         updateLayerVisibility(this.value);
+        //     };
+        // }
 
+        // toggle layer visibility
+        // function updateLayerVisibility(indx) {
 
-      // Construct Hover Pop-Up Window
-      map.infoWindow.resize(245,125);
+        //     for (var i = 0; i < featLayers.length; i++) {
+        //         featLayers[i].visible = false;
+        //     }
 
-      dialog = new TooltipDialog({
-          id: "tooltipDialog",
-          style: "position: absolute; width: 250px; font: normal normal normal 10pt Helvetica;z-index:100"
-        });
-      dialog.startup();
+        //     featLayers[indx].visible = true;
 
-      var highlightSymbol = new SimpleFillSymbol(
-          SimpleFillSymbol.STYLE_SOLID,
-          new SimpleLineSymbol(
-            SimpleLineSymbol.STYLE_SOLID,
-            new Color([255,0,0]), 3
-          ),
-          new Color([125,125,125,0.35])
-        );
+        // }
 
-
-      //Close the dialog when the mouse leaves the highlight graphic
-        map.on("load", function(){
-          map.graphics.enableMouseEvents();
-          map.graphics.on("mouse-out", closeDialog);
-
-        });
-
-      fLayerStops.on("mouse-over", function(evt){
-          var t = "<b>${NAME}</b>";
-
-      var content = esriLang.substitute(evt.graphic.attributes,t);
-          var highlightGraphic = new Graphic(evt.graphic.geometry,highlightSymbol);
-          map.graphics.add(highlightGraphic);
-
-      dialog.setContent(content);
-
-          domStyle.set(dialog.domNode, "opacity", 0.85);
-          dijitPopup.open({
-            popup: dialog,
-            x: evt.pageX,
-            y: evt.pageY
-          });
-        });
-
-        function closeDialog() {
-          map.graphics.clear();
-          dijitPopup.close(dialog);
-        }
-
+        // set default layer to visible
+        // updateLayerVisibility(0);
 
         // toggle legend display
       $('#btn-closeLegend').on('click', function (e) {
