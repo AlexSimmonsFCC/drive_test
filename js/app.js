@@ -125,7 +125,7 @@ require([
         if (response.results.length) {
           var graphic = response.results.filter(function(result) {
             return result.graphic.layer === fLayerStops;
-          })[0].graphic;
+          }).graphic;
 
           var attributes = graphic.attributes;
           var state = attributes.STATE;
@@ -138,13 +138,13 @@ require([
 
           // symbolize all line segments with the given
           // storm name with the same symbol
-         
+          fLayerStops.popupTemplate = template
           fLayerStops.renderer = renderer;
         }
       }
 
 
-
+        
 
      // Add tile layers to map
       map.addMany([fLayerStates,fLayerStops,fLayerLines])
