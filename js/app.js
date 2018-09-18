@@ -121,8 +121,7 @@ require([
           document.getElementById("info").style.visibility = "visible";
           document.getElementById("state").innerHTML = "State: " + state;
           document.getElementById("city").innerHTML = "City: " + category;
-          document.getElementById("wind").innerHTML = wind + " kts";
-
+     
 
 
         // Add tile layers to map
