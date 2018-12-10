@@ -1,194 +1,209 @@
-require([
-  'esri/Map',
-  'esri/views/MapView',
-  'esri/Basemap',
-  'esri/layers/VectorTileLayer',
-  'esri/layers/FeatureLayer',
-  'esri/layers/WebTileLayer',
-  'esri/widgets/Search',
-  'esri/widgets/Home',
-  'esri/widgets/Locate'
-],
-    function (Map, MapView, Basemap, VectorTileLayer, FeatureLayer, WebTileLayer, Search, Home, Locate, Graphic
-              SimpleRenderer, SimpleFillSymbol, SimlpeLineSymbol, esriLang, Color, number, domStyle, TooltipDialog, dijitPop) {
-      var map, view, searchWidget, homeBtn, locateBtn
-      var layers = window.layers
-      var featLayers = []
-
-        // Create base layer from Mapbox street layer
-      var mapBaseLayer = new WebTileLayer({
-        urlTemplate: 'https://{subDomain}.tiles.mapbox.com/v4/fcc.k74ed5ge/{level}/{col}/{row}.png?access_token=pk.eyJ1IjoiZmNjIiwiYSI6InBiaGMyLU0ifQ.LOmVYpUCFv2yWpbvxDdQNg',
-        subDomains: ['a', 'b', 'c', 'd'],
-        copyright: '\u00A9 OpenStreetMap contributors Design \u00A9 Mapbox'
-      })
-
-        // Create base map from Mapbox layer
-      var mapBox = new Basemap({
-        baseLayers: [mapBaseLayer],
-        title: 'Street'
-      })
-
-        // Create map
-      map = new Map({
-        basemap: mapBox
-      })
-
-        // Make map view and bind it to the map
-      view = new MapView({
-        container: 'map',
-        map: map,
-        center: [-98, 38.48],
-        zoom: 4,
-        constraints: {
-          minZoom: 4,
-          maxZoom: 9,
-          rotationEnabled: false
-        }
-      })
-
-        // Add search widget
-      searchWidget = new Search({
-        view: view
-      })
-
-        // Position search widget
-      view.ui.add(searchWidget, {
-        position: 'top-right',
-        index: 2
-      })
-
-        // Add Home widget
-      homeBtn = new Home({
-        view: view
-      })
-
-        // Position Home widget
-      view.ui.add(homeBtn, 'top-left')
-
-        // Add locate widget
-      locateBtn = new Locate({
-        view: view
-      })
-
-        // Position locate widget
-      view.ui.add(locateBtn, {
-        position: 'top-left'
-      })
-
-
-      // Add Pop Up Template
-      var template = {
-        title: '{Tour} Stop Details',
-        content: '<ul style="margin-top: 0"><li>City = {City}</li><li>State = {State}</li><li><a href={Link}>Link</a></li><li><img src="{Details}" alt=""></li><ul>'
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Change attribute used for a renderer</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/3.26/dijit/themes/tundra/tundra.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/esri.css">
+    <style>
+      html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+      h3 { margin: 0 0 5px 0; border-bottom: 1px solid #444; text-align: center; }
+      .shadow {
+        -moz-box-shadow: 0 0 5px #888;
+        -webkit-box-shadow: 0 0 5px #888;
+        box-shadow: 0 0 5px #888;
       }
+      #map{ margin: 0; padding: 0; }
+      #feedback {
+        background: #fff;
+        color: #444;
+        font-family: arial;
+        left: 30px;
+        margin: 5px;
+        padding: 10px;
+        position: absolute;
+        top: 30px;
+        width: 300px;
+        z-index: 40;
+      }
+      #note { font-size: 80%; font-weight: 700; padding: 0 0 10px 0; }
+      #legendDiv { padding: 10px 0 0 0; }
+    </style>
 
-      // Create feature layers
-      var fLayerStates = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/VisitedStates/FeatureServer/0?token=YAnkkFUvC7X-oa3y_GLl4Vvu6mzao5h6dEXg0VJ9WiauySlP1DbLm4YVvqRS4SJiMgDqkE8ZGSq5OfkSKPb8S6JG9jSNhKMgT725KY2DwlYlFBKmG6-_ntfEKM6TOt4uHMFrqSO0POPxZX5MePGDR-S2fXU2i8r6Hu1WbiYM_rncZpQKKjwTuih7_A_S3WNFTm-HdgC-3IYpAbfyfq76ZoBoby6ZK3NWTyOomCQI_wAMycVQWQ0tKbZL-RSyObIMKdo9uXL09b2j9mSVRywZxQ..',
-        outFields: ['*']
-      })
+    <script src="https://js.arcgis.com/3.26/"></script>
+    <script>
+      // one global for persistent app variables
+      var app = {};
+      require([
+        "esri/map",
+        "esri/layers/ArcGISTiledMapServiceLayer", "esri/layers/ArcGISDynamicMapServiceLayer",
+        "esri/request", "esri/config",
+        "esri/tasks/ClassBreaksDefinition", "esri/tasks/AlgorithmicColorRamp",
+        "esri/tasks/GenerateRendererParameters", "esri/tasks/GenerateRendererTask",
+        "esri/layers/LayerDrawingOptions",
+        "esri/symbols/SimpleFillSymbol", "esri/dijit/Legend",
+        "dojo/parser", "dojo/_base/array", "esri/Color", "dojo/dom-style",
+        "dojo/json", "dojo/dom",
+        "dojo/data/ItemFileReadStore",
+        "dijit/registry",
 
-      var fLayerStops = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TourStops/FeatureServer/0?token=jJw0ErN_O-9fblQXCD2vnHoyJ02VQMSEoQ1lP-fjl62jSYl2RwiQ00CFVw9t9_iCAXOqttTkk9IFJr8KXJa8DRAu-zoVL0DATc_KQwSCPVE5s07-EuvhVuRXCAmhuN9hQus-HQGuzXRyOWRxLc6KuwNA5O6ex6yTDDx3J3p2HEdmLBv0i7FW7CS9zjD6o4b06p1FrXabjRTGcXZy6AGYJcI4lNRawkBa_dvuYvwJNqh_pTOx7vtvazDgPyvfzqyePHQ1I0A3VkchKO9mqsWuHw..',
-        outFields: ['*']
-      })
+        "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/form/FilteringSelect",
+        "dojo/domReady!"
+      ], function(
+        Map,
+        ArcGISTiledMapServiceLayer, ArcGISDynamicMapServiceLayer,
+        esriRequest, esriConfig,
+        ClassBreaksDefinition, AlgorithmicColorRamp,
+        GenerateRendererParameters, GenerateRendererTask,
+        LayerDrawingOptions,
+        SimpleFillSymbol, Legend,
+        parser, arrayUtils, Color, domStyle,
+        JSON, dom,
+        ItemFileReadStore,
+        registry
+      ) {
+        parser.parse();
 
-      var fLayerLines = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TripLines/FeatureServer/0?token=3rFkNxQ1qHMoSKDAfMVKEVzTN3R7AYu7ysXoSsTqcsokIdJUk894pTtap6hqHQ0Jsvojd5Ishiwxf6-u1l9coI4XSoZ_y7RUsjVP7t1BIS-7JJ4d20aOPhwaC9jhsUQV11MN3ZcJZA0PSVe-pWOycTQ0srCCeeITlva9smWOuOdMNPb4fRiAKL2HjqG93LSrQuGXrFGIw1aCIlfFX8eP3f1EuNhOirzsYQUCSCv_1HYZpyFN3PtM6yzBxR67mVPknJdi8p1p_K2T87xfPnCP3A..',
-        outFields: ['*']
-      })
+        esriConfig.defaults.io.proxyUrl = "/proxy/";
 
-  
+        app.dataUrl = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer/2";
+        app.defaultFrom = "#ffffcc";
+        app.defaultTo = "#006837";
 
-        // Add tile layers to map
-      map.addMany([fLayerStates,fLayerStops,fLayerLines])
-     
-
-      // Add Line and Fill to Hover Feature
-       var symbol = new SimpleFillSymbol(
-          SimpleFillSymbol.STYLE_SOLID,
-          new SimpleLineSymbol(
-            SimpleLineSymbol.STYLE_SOLID,
-            new Color([255,255,255,0.35]),
-            1
-          ),
-          new Color([125,125,125,0.35])
-        );
-        
-        fLayerStops.setRenderer(new SimpleRenderer(symbol));
-        map.addLayer(fLayerStops);
-
-
-      // Construct Hover Pop-Up Window
-      map.infoWindow.resize(245,125);
-
-      dialog = new TooltipDialog({
-          id: "tooltipDialog",
-          style: "position: absolute; width: 250px; font: normal normal normal 10pt Helvetica;z-index:100"
+        app.map = new Map("map", {
+          center: [-85.787, 39.782],
+          zoom: 6,
+          slider: false
         });
-      dialog.startup();
 
-      var highlightSymbol = new SimpleFillSymbol(
-          SimpleFillSymbol.STYLE_SOLID,
-          new SimpleLineSymbol(
-            SimpleLineSymbol.STYLE_SOLID,
-            new Color([255,0,0]), 3
-          ),
-          new Color([125,125,125,0.35])
-        );
+        var basemap = new ArcGISTiledMapServiceLayer("https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer");
+        app.map.addLayer(basemap);
+        var ref = new ArcGISTiledMapServiceLayer("https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Reference_Overlay/MapServer");
+        app.map.addLayer(ref);
 
-
-      //Close the dialog when the mouse leaves the highlight graphic
-        map.on("load", function(){
-          map.graphics.enableMouseEvents();
-          map.graphics.on("mouse-out", closeDialog);
-
+        // add US Counties as a dynamic map service layer
+        var urlDyn = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer";
+        var usaLayer = new ArcGISDynamicMapServiceLayer(urlDyn, {
+          id: "us_counties",
+          opacity: 0.7,
+          visible: false
         });
+        usaLayer.setVisibleLayers([2]);
+        app.map.addLayer(usaLayer);
 
-      fLayerStops.on("mouse-over", function(evt){
-          var t = "<b>${NAME}</b>";
+        // get field info
+        var countyFields = esriRequest({
+          url: app.dataUrl,
+          content: {
+            f: "json"
+          },
+          callbackParamName: "callback"
+        });
+        countyFields.then(function(resp) {
+          var fieldNames, fieldStore;
 
-      var content = esriLang.substitute(evt.graphic.attributes,t);
-          var highlightGraphic = new Graphic(evt.graphic.geometry,highlightSymbol);
-          map.graphics.add(highlightGraphic);
-
-      dialog.setContent(content);
-
-          domStyle.set(dialog.domNode, "opacity", 0.85);
-          dijitPopup.open({
-            popup: dialog,
-            x: evt.pageX,
-            y: evt.pageY
+          fieldNames = { identifier: "value", label: "name", items: [] };
+          arrayUtils.forEach(resp.fields.slice(6, 16), function(f) { // add some field names to the FS
+            fieldNames.items.push({ "name": f.name, "value": f.name });
           });
+          fieldStore = new ItemFileReadStore({ data: fieldNames });
+          registry.byId("fieldNames").set("store", fieldStore);
+          registry.byId("fieldNames").set("value", "POP2007"); // set a value
+        }, function(err) {
+          console.log("failed to get field names: ", err);
         });
 
-        function closeDialog() {
-          map.graphics.clear();
-          dijitPopup.close(dialog);
+        // update renderer when field name changes
+        registry.byId("fieldNames").on("change", getData);
+        registry.byId("fieldNames").set("value", "POP_2007"); // triggers getData()
+
+        function getData() {
+          classBreaks(app.defaultFrom, app.defaultTo);
         }
 
+        function classBreaks(c1, c2) {
+          var classDef = new ClassBreaksDefinition();
+          classDef.classificationField = registry.byId("fieldNames").get("value") || "POP2000";
+          classDef.classificationMethod = "natural-breaks"; // always natural breaks
+          classDef.breakCount = 5; // always five classes
+
+          var colorRamp = new AlgorithmicColorRamp();
+          colorRamp.fromColor = new Color.fromHex(c1);
+          colorRamp.toColor = new Color.fromHex(c2);
+          colorRamp.algorithm = "hsv"; // options are:  "cie-lab", "hsv", "lab-lch"
+
+          classDef.baseSymbol = new SimpleFillSymbol("solid", null, null);
+          classDef.colorRamp = colorRamp;
+
+          var params = new GenerateRendererParameters();
+          params.classificationDefinition = classDef;
+          var generateRenderer = new GenerateRendererTask(app.dataUrl);
+          generateRenderer.execute(params, applyRenderer, errorHandler);
+        }
+
+        function applyRenderer(renderer) {
+          // dynamic layer stuff
+          var optionsArray = [];
+          var drawingOptions = new LayerDrawingOptions();
+          drawingOptions.renderer = renderer;
+          // set the drawing options for the relevant layer
+          // optionsArray index corresponds to layer index in the map service
+          optionsArray[2] = drawingOptions;
+          app.map.getLayer("us_counties").setLayerDrawingOptions(optionsArray);
+          app.map.getLayer("us_counties").show();
+          // create the legend if it doesn't exist
+          if ( ! app.hasOwnProperty("legend") ) {
+            createLegend();
+          }
+        }
+
+        function createLegend() {
+          app.legend = new Legend({
+            map : app.map,
+            layerInfos : [ {
+              layer : app.map.getLayer("us_counties"),
+              title : "US Counties"
+            } ]
+          }, dom.byId("legendDiv"));
+          app.legend.startup();
+        }
+
+        function errorHandler(err) {
+          // console.log("Something broke, error: ", err);
+          console.log("error: ", JSON.stringify(err));
+        }
       });
+    </script>
+  </head>
 
+  <body class="tundra">
+    <div data-dojo-type="dijit/layout/BorderContainer"
+         data-dojo-props="design:'headline',gutters:false"
+         style="width: 100%; height: 100%; margin: 0;">
+      <div id="map"
+           data-dojo-type="dijit/layout/ContentPane"
+           data-dojo-props="region:'center'">
 
-        // toggle legend display
-      $('#btn-closeLegend').on('click', function (e) {
-        e.preventDefault()
-        $('.map-legend').hide('fast')
-      })
+        <div id="feedback" class="shadow">
+          <h3>Change the Attribute Field Used to Render Data</h3>
+          <div id="info">
+            <div id="note">
+              Note:  This sample requires an ArcGIS Server version 10.1 map service to generate a renderer.
+            </div>
 
-      $('#btn-openLegend').on('click', function (e) {
-        e.preventDefault()
-        $('.map-legend').show('fast')
-      })
+            
+            <label for="fieldNames">Render based on: </label>
+            <select id="fieldNames" name="baseSym"
+                    data-dojo-type="dijit/form/FilteringSelect"
+                    data-dojo-props="style:'width:200px;'">
+            </select>
 
-        // toggle layer control display
-      $('#btn-closeLayerCtrl').on('click', function (e) {
-        e.preventDefault()
-        $('.layer-control').hide('fast')
-      })
+            <div id="legendDiv"></div>
 
-      $('#btn-openLayerCtrl').on('click', function (e) {
-        e.preventDefault()
-        $('.layer-control').show('fast')
-      })
-    })
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
