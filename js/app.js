@@ -1,178 +1,140 @@
-require([
-  'esri/Map',
-  'esri/views/MapView',
-  'esri/Basemap',
-  'esri/layers/VectorTileLayer',
-  'esri/layers/FeatureLayer',
-  'esri/layers/WebTileLayer',
-  'esri/widgets/Search',
-  'esri/widgets/Home',
-  'esri/widgets/Locate',
-  'dojo/domReady!'
-],
-    function (Map, MapView, Basemap, VectorTileLayer, FeatureLayer, WebTileLayer, Search, Home, Locate) {
-      var map, view, searchWidget, homeBtn, locateBtn
-      var layers = window.layers
-      var featLayers = []
-
-        // Create base layer from Mapbox street layer
-      var mapBaseLayer = new WebTileLayer({
-        urlTemplate: 'https://{subDomain}.tiles.mapbox.com/v4/fcc.k74ed5ge/{level}/{col}/{row}.png?access_token=pk.eyJ1IjoiZmNjIiwiYSI6InBiaGMyLU0ifQ.LOmVYpUCFv2yWpbvxDdQNg',
-        subDomains: ['a', 'b', 'c', 'd'],
-        copyright: '\u00A9 OpenStreetMap contributors Design \u00A9 Mapbox'
-      })
-
-        // Create base map from Mapbox layer
-      var mapBox = new Basemap({
-        baseLayers: [mapBaseLayer],
-        title: 'Street'
-      })
-
-
-var fLayerStops = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TourStops/FeatureServer/0?token=jJw0ErN_O-9fblQXCD2vnHoyJ02VQMSEoQ1lP-fjl62jSYl2RwiQ00CFVw9t9_iCAXOqttTkk9IFJr8KXJa8DRAu-zoVL0DATc_KQwSCPVE5s07-EuvhVuRXCAmhuN9hQus-HQGuzXRyOWRxLc6KuwNA5O6ex6yTDDx3J3p2HEdmLBv0i7FW7CS9zjD6o4b06p1FrXabjRTGcXZy6AGYJcI4lNRawkBa_dvuYvwJNqh_pTOx7vtvazDgPyvfzqyePHQ1I0A3VkchKO9mqsWuHw..',
-        outFields: ['*']
-      })
-
-        // Create map
-      map = new Map({
-        basemap: mapBox,
-        layers: [fLayerStops]
-      })
-
-        // Make map view and bind it to the map
-      view = new MapView({
-        container: 'map',
-        map: map,
-        center: [-98, 38.48],
-        zoom: 4,
-        constraints: {
-          minZoom: 4,
-          maxZoom: 9,
-          rotationEnabled: false
-        }
-      })
-
-        // Add search widget
-      searchWidget = new Search({
-        view: view
-      })
-
-        // Position search widget
-      view.ui.add(searchWidget, {
-        position: 'top-right',
-        index: 2
-      })
-
-        // Add Home widget
-      homeBtn = new Home({
-        view: view
-      })
-
-        // Position Home widget
-      view.ui.add(homeBtn, 'top-left')
-
-        // Add locate widget
-      locateBtn = new Locate({
-        view: view
-      })
-
-        // Position locate widget
-      view.ui.add(locateBtn, {
-        position: 'top-left'
-      })
-
-      // Add Info Region
-      view.ui.add("info", "top-right");
-
-      var template = {
-        title: '{Tour} Stop Details',
-        content: '<ul style="margin-top: 0"><li>City = {City}</li><li>State = {State}</li><li><a href={Link}>Link</a></li><li><img src="{Details}" alt=""></li><ul>'
-      }
-
-      // Create feature layers
-      var fLayerStates = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/VisitedStates/FeatureServer/0?token=YAnkkFUvC7X-oa3y_GLl4Vvu6mzao5h6dEXg0VJ9WiauySlP1DbLm4YVvqRS4SJiMgDqkE8ZGSq5OfkSKPb8S6JG9jSNhKMgT725KY2DwlYlFBKmG6-_ntfEKM6TOt4uHMFrqSO0POPxZX5MePGDR-S2fXU2i8r6Hu1WbiYM_rncZpQKKjwTuih7_A_S3WNFTm-HdgC-3IYpAbfyfq76ZoBoby6ZK3NWTyOomCQI_wAMycVQWQ0tKbZL-RSyObIMKdo9uXL09b2j9mSVRywZxQ..',
-        outFields: ['*']
-      })
-
+require(['esri/layers/VectorTileLayer',
+        "esri/Map","esri/Graphic","esri/symbols/SimpleMarkerSymbol","esri/symbols/SimpleFillSymbol","esri/widgets/Legend","esri/tasks/Locator","esri/geometry/support/webMercatorUtils","esri/geometry/Point",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer","esri/widgets/Search", "esri/widgets/Home","esri/tasks/support/Query", "esri/tasks/QueryTask", "dojo/domReady!"], 
       
+      function(VectorTileLayer, Map, Graphic, SimpleMarkerSymbol, SimpleFillSymbol, Legend, Locator, webMercatorUtils, Point, MapView, FeatureLayer, Search, Home, Query, QueryTask) {
+        var map = new Map({
+          basemap: "dark-gray"
+        });
 
-      var fLayerLines = new FeatureLayer({
-        url: 'https://services.arcgis.com/YnOQrIGdN9JGtBh4/ArcGIS/rest/services/TripLines/FeatureServer/0?token=3rFkNxQ1qHMoSKDAfMVKEVzTN3R7AYu7ysXoSsTqcsokIdJUk894pTtap6hqHQ0Jsvojd5Ishiwxf6-u1l9coI4XSoZ_y7RUsjVP7t1BIS-7JJ4d20aOPhwaC9jhsUQV11MN3ZcJZA0PSVe-pWOycTQ0srCCeeITlva9smWOuOdMNPb4fRiAKL2HjqG93LSrQuGXrFGIw1aCIlfFX8eP3f1EuNhOirzsYQUCSCv_1HYZpyFN3PtM6yzBxR67mVPknJdi8p1p_K2T87xfPnCP3A..',
-        outFields: ['*']
-      })
-
-
-
-
-
-
-
- // Set up an event handler for pointer-down (mobile)
-      // and pointer-move events (mouse)
-      // and retrieve the screen x, y coordinates
-      view.on("pointer-move", eventHandler);
-      view.on("pointer-down", eventHandler);
-
-      function eventHandler(event) {
-        // the hitTest() checks to see if any graphics in the view
-        // intersect the given screen x, y coordinates
-        view.hitTest(event)
-          .then(getGraphics);
-      }
-
-      function getGraphics(response) {
-        // the topmost graphic from the hurricanesLayer
-        // and display select attribute values from the
-        // graphic to the user
-        if (response.results.length) {
-          var graphic = response.results.filter(function(result) {
-            return result.graphic.layer === fLayerStops;
-          })[0].graphic;
-
-          var attributes = graphic.attributes;
-          var state = attributes.State;
-          var city = attributes.City;
-          var link = attributes.Link;
-
-          document.getElementById("info").style.visibility = "visible";
-          document.getElementById("State").innerHTML = "St8: " + state;
-          document.getElementById("City").innerHTML = "City:  " + city;
-          document.getElementById("Link").innerHTML = "Link:  " + link;
-
-          // symbolize all line segments with the given
-          // storm name with the same symbol
-         
-          fLayerStops.renderer = renderer;
-        }
-      }
-
-
-
-
-     // Add tile layers to map
-      map.addMany([fLayerStates,fLayerStops,fLayerLines])
-     
+        var view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [-95.3, 38.397],
+          zoom: 5
+        });
         
-      $('#btn-closeLegend').on('click', function (e) {
-        e.preventDefault()
-        $('.map-legend').hide('fast')
-      })
+         var home = new Home({
+         view: view
+          }, "HomeButton");
+         view.ui.add(home, "top-left");
 
-      $('#btn-openLegend').on('click', function (e) {
-        e.preventDefault()
-        $('.map-legend').show('fast')
-      })
+            
+            // Instantiate Feature Layyer
+            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersVectorTile/VectorTileServer"}); 
+            var featureLayer = new FeatureLayer({url:"https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiers_gdb/FeatureServer", outFields: ['*']});
+            map.add(vectorTileLayer);
+            map.add(featureLayer);
+            
 
-        // toggle layer control display
-      $('#btn-closeLayerCtrl').on('click', function (e) {
-        e.preventDefault()
-        $('.layer-control').hide('fast')
-      })
+            
+            
+            
+            // Create Legend
+            var legend = new Legend({
+            view: view,
+            layerInfos:[
+              {layer: featureLayer,
+                title: ""}
+            ]
+            });
+ 
 
-      $('#btn-openLayerCtrl').on('click', function (e) {
-        e.preventDefault()
-        $('.layer-control').show('fast')
-      })
-    })
+           // Add Search Bar and Legend
+           view.ui.add(legend, "bottom-left");
+           var search = new Search({container: "searchbar"});
+     
+           resultwindow.style.visibility='hidden' 
+           
+        // Outer Function to Add Point and Retrieve Rurality Tier from Search Bar
+           search.on('search-complete', function(result){
+           
+            // Show Result Window
+            resultwindow.style.visibility='visible'
+              
+            if(result.results && result.results.length > 0 && result.results[0].results && result.results[0].results.length > 0){
+            var geom = result.results[0].results[0].feature.geometry;
+            }        
+            
+            // Set Text if No Rural Tier
+            document.getElementById("resultwindow").innerHTML = 'The address provided is not in a rural tier.';
+            
+            // Clear Point from Previous Query
+            view.graphics.removeAll();
+            
+            // Construct Point Symbol and Add it When Search Completes
+            var point = { type: "point",  longitude: geom.longitude, latitude: geom.latitude};
+            var markerSymbol = { type: "simple-marker",  color: [226, 119, 40]};
+            var pointGraphic = new Graphic({geometry: point, symbol: markerSymbol});
+            view.graphics.add(pointGraphic);
+            
+            // Zoom to New Point
+            view.goTo({center: [geom.longitude, geom.latitude], zoom: 10}, {animate: true, duration: 2000});
+         
+            // Query to Retrieve Rurality Tier.
+            var query = featureLayer.createQuery();
+            query.outFields = ["RuralType"];     
+            query.geometry = geom  
+            
+            // Inner Function to Query the Layers and Set HTML Region with Result
+            featureLayer.queryFeatures(query).then(function(response){
+            var attribute = response.features[0].attributes;
+            console.log(response)
+            document.getElementById("resultwindow").innerHTML = "The address provided is located in a: " + "<span style='font-weight:bold; font-size:100%;' >"  + attribute["RuralType"] + " Tier" + "</span>";
+            document.getElementById("info") = search;
+             });
+
+       }); 
+         
+     
+
+     
+     
+     
+     
+     
+      // Outer Function to Add Point and Retrieve Rurality Tier from Click Event
+          view.on('click', function (event) {
+          
+          // Show Result Window
+          resultwindow.style.visibility='visible'
+          
+          // Remove Graphics from Previous Click
+           view.graphics.removeAll();
+           
+          // Set Text if No Rural Tier
+          document.getElementById("resultwindow").innerHTML = 'The address provided is not in a rural tier.';
+          
+          // Get Coords on Mouse Click Location
+           var clickcoords = view.toMap({x: event.x, y: event.y});
+          
+          // Construct Point Symbol and Add to Click Location
+           var point = { type: "point",  longitude: clickcoords.longitude, latitude: clickcoords.latitude};
+           var markerSymbol = { type: "simple-marker",  color: [226, 119, 40]};
+           var pointGraphic = new Graphic({geometry: point, symbol: markerSymbol});
+           view.graphics.add(pointGraphic)
+         
+          // Query to Retrieve Rurality Tier.
+           var query = featureLayer.createQuery();
+           query.outFields = ["RuralType"];     
+           query.geometry = clickcoords  
+
+
+          // Inner Function to Query the Layers, Get the Address, and Set HTML Region with Result
+           featureLayer.queryFeatures(query).then(function(response){
+           var attribute = response.features[0].attributes;
+           var locator = new Locator("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
+           locator.locationToAddress(webMercatorUtils.webMercatorToGeographic(event.mapPoint), 100).then(function(event){
+            if (event.address) {
+              var address = {Address: event.address};
+              var location = webMercatorUtils.geographicToWebMercator(event.location)}
+              document.getElementById("resultwindow").innerHTML = address["Address"] + 
+              " is located in a: " + "<span style='font-weight:bold; font-size:100%;' >"  + attribute["RuralType"] + 
+              " Tier" + "</span>"; 
+              });
+           document.getElementById("info") = search;
+            });
+            
+       });
+  });
