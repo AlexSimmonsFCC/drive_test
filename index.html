@@ -1,101 +1,97 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Intro to FeatureLayer - 4.13</title>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-    <title>Bryying the Digital Divide Trips</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
-    <link rel="stylesheet" href="css/styles.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.8/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.8/"></script>
+    <script src="app.js"></script>
 
-<body>
-    <main class="map-container">
-        <div id="btn-openLayerCtrl" class="esri-ui-corner">
-            <div class="icon-layers esri-component esri-widget-button esri-widget"></div>
-        </div>        
-        <div id="map"></div>
-        <div class="map-legend">
-            <table>
-                <thead>
-                    <tr>
-                        <td colspan="3"><span class="icon icon-list"></span> <span class="map-legend-name">Bridging the Digital Divide Tour</span>
-                            <button id="btn-closeLegend" class="btn btn-xs pull-right"><span class="icon icon-close"></span> <span class="sr-only">Hide legend</span></button>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#ED5151"></div>
-                        </td>
-                        <td>Gulf Coast Trip, April 30 - May 4</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#149ECE "></div>
-                        </td>
-                        <td>Midwest Trip, September 19-22</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#A7C636 "></div>
-                        </td>
-                        <td>Pacific NW Trip, June 18-23</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#9E559C"></div>
-                        </td>
-                        <td>Piedmont May 21-25</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#FC921F"></div>
-                        </td>
-                        <td>AR, TN, KY Trip, April 3-6</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#FFDE3E"></div>
-                        </td>
-                        <td>Four Corners Trip, Aug 20</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#F789D8"></div>
-                        </td>
-                        <td>Arizona and Nevada Trip, Aug 22</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#B7814A"></div>
-                        </td>
-                        <td>Mid-Atlantic Trip, July 10</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <button id="btn-openLegend" class="btn legend__icon" title="Map Legend"><span class="icon icon-list"></span></button>
+    <style>
+      html,
+      body,
+      
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      
+      
+      #helptext {
+        border-radius: 10px;
+        position: fixed;
+        height: 70px;
+        font-family: arial;
+        margin: 5px;
+        padding: 10px;
+        z-index: 40;
+        background: #D3D3D3;
+        color: #444;
+        width: auto;
+        left: 65px;
+        top: 15px;
+        -moz-box-shadow: 0 0 10px #888;
+        -webkit-box-shadow: 0 0 10px #888;
+        box-shadow: 0 0 10px #888;
+        border-color: #212223;
+        border-width: 2px;
+        border-style: solid;
+             } 
+      
+      
+      #searchbar {
+        bottom: 20px;
+        height: 33px;
+        top: 60px;
+        margin: 5px;
+        position: absolute;
+        text-align: left;
+        width: 300px;
+        z-index: 40;
+        left: 85px;
+      }
+      
+      
+       #resultwindow {
+        border-radius: 10px;
+        position: fixed;
+        height: auto;
+        font-family: arial;
+        margin: 5px;
+        padding: 10px;
+        z-index: 40;
+        background: #D3D3D3;
+        color: #444;
+        width: auto;
+        left: 65px;
+        top: 120px;
+        -moz-box-shadow: 0 0 10px #888;
+        -webkit-box-shadow: 0 0 10px #888;
+        box-shadow: 0 0 10px #888;
+        border-color: #212223;
+        border-width: 2px;
+        border-style: solid;
+             } 
         
-        <div id="info">
-    <span id="name"></span>
-    <br>
-    <span id="category"></span>
-    <br>
-    <span id="wind"></span>
-  </div>
+       </head>
+
+  <body>
+    <div id="helptext"><strong>&nbspClick The Map or Enter an Address Below to Retrieve Your Rurality Tier.</strong></div>
+    <div id="searchbar"></div>
+    <div id="resultwindow"></div>
+    <div id="viewDiv"></div>
+  </body>
+  
+</html>   
         
         
-        
-    </main>
-    
-    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script>
-    window.jQuery || document.write('<script src="../js/vendor/jquery-1.11.2.min.js"><\/script>')
-    </script>
-    <script src="https://js.arcgis.com/4.3/"></script>
-    <script src="js/app.js"></script>
-</body>
- 
-</html>
