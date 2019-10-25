@@ -22,7 +22,7 @@ require(['esri/layers/VectorTileLayer',
 
             
             // Instantiate Feature Layyer
-            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersVectorTile/VectorTileServer"}); 
+            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersVTL/VectorTileServer"}); 
             var featureLayer = new FeatureLayer({url:"https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiers_gdb/FeatureServer", outFields: ['*']});
             map.add(vectorTileLayer);
             map.add(featureLayer);
