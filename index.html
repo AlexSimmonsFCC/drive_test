@@ -6,13 +6,16 @@
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
-    <title>Intro to FeatureLayer - 4.13</title>
+    <title>RHC Rurality Tiers</title>
 
     <link
       rel="stylesheet"
       href="https://js.arcgis.com/4.8/esri/themes/light/main.css"
     />
     <script src="https://js.arcgis.com/4.8/"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/styles.css">
 
     <style>
       html,
@@ -82,6 +85,34 @@
         border-style: solid;
              } 
       
+      
+
+        #loadingbar {
+        bottom: 20px;
+        height: 33px;
+        top: 100px;
+        margin: 5px;
+        position: absolute;
+        text-align: left;
+        width: 300px;
+        z-index: 40;
+        left: 69px;
+      }
+  
+  
+      #show_legend_button {
+        bottom: 25px;
+        height: 28px;
+        margin: 5px;
+        position: absolute;
+        text-align: left;
+        width: 30px;
+        z-index: 40;
+        left: 12px;
+      }
+
+
+
 
      
       
@@ -118,7 +149,7 @@
       }
             
             // Instantiate Feature Layyer
-            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersVectorTile/VectorTileServer"}); 
+            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersVTL/VectorTileServer"}); 
             var featureLayer = new FeatureLayer({url:"https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersAgain/FeatureServer/0", 
                                                  outFields: ['*'],
                                                  visible:false,
@@ -127,23 +158,11 @@
             map.add(featureLayer);
             
 
-            
-      /*       // Create Legend
-            var legend = new Legend({
-            view: view,
-            layerInfos:[
-              {layer: featureLayer,
-                title: ""}
-            ]
-            });
-            
-                       // Add Search Bar and Legend
-                       view.ui.add(legend, "bottom-left"); */
-           
            
            var search = new Search({container: "searchbar"});
-     
-           resultwindow.style.visibility='hidden' 
+           resultwindow.style.visibility='hidden';
+           loadingbar.style.visibility='hidden';
+           
            
         // Outer Function to Add Point and Retrieve Rurality Tier from Search Bar
            search.on('search-complete', function(result){
@@ -195,14 +214,11 @@
       // Outer Function to Add Point and Retrieve Rurality Tier from Click Event
           view.on('click', function (event) {
           
-          // Show Result Window
-          resultwindow.style.visibility='visible'
-          
+         loadingbar.style.visibility='visible';
+         resultwindow.style.visibility='hidden';
           // Remove Graphics from Previous Click
            view.graphics.removeAll();
            
-          // Set Text if No Rural Tier
-          document.getElementById("resultwindow").innerHTML = 'The address provided is not in a rural tier.';
           
           // Get Coords on Mouse Click Location
            var clickcoords = view.toMap({x: event.x, y: event.y});
@@ -223,6 +239,16 @@
            featureLayer.queryFeatures(query).then(function(response){
            var attribute = response.features[0].attributes;
            var locator = new Locator("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
+           var tier = attribute["Tier"]
+       
+           
+            
+           if (tier.indexOf("None") >= 0) {
+           document.getElementById("resultwindow").innerHTML = 'The address provided is not in a rural tier.';
+           loadingbar.style.visibility='hidden';
+           resultwindow.style.visibility='visible';
+           }
+           else {
            locator.locationToAddress(webMercatorUtils.webMercatorToGeographic(event.mapPoint), 100).then(function(event){
             if (event.address) {
               var address = {Address: event.address};
@@ -230,14 +256,39 @@
               document.getElementById("resultwindow").innerHTML = address["Address"] + 
               " is located in a: " + "<span style='font-weight:bold; font-size:100%;' >"  + attribute["Tier"] + 
               " Tier" + "</span>"; 
+           loadingbar.style.visibility='hidden';
+           resultwindow.style.visibility='visible';
               });
+             }; 
            document.getElementById("info") = search;
             });
             
        });
+       
+/* var slideSource = document.getElementById('resultwindow');
+
+document.getElementById('btn-closeLegend').onclick = function () {
+  legend.style.visibility='hidden';
+  console.log('hi');
+} */
+   
+       
   });
      
      
+$(document).ready(function(){
+  $('#btn-closeLegend').click(function(){
+    $("#legend").fadeOut("medium");
+    $("#show_legend_button").fadeIn("medium");
+  });
+});
+
+$(document).ready(function(){
+  $('#show_legend_button').click(function(){
+    $("#legend").fadeIn("medium");
+    $("#show_legend_button").fadeOut("medium");
+  });
+});
 
       
    
@@ -251,25 +302,24 @@
     <div id="helptext"><strong>&nbspClick The Map or Enter an Address Below to Retrieve Your Rurality Tier.</strong></div>
     <div id="searchbar"></div>
     <div id="resultwindow"></div>
-    <div id="viewDiv"></div>
-    
+    <div id="loadingbar" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+    <div id="viewDiv"></div>  
+    <button id = "show_legend_button" style="display:none" class = "close_legend_button"><i class="fa fa-bars"></i></button><br><br>
 
 
-
-
-       <div class="map-legend">
+       <div id ="legend" class="map-legend">
             <table>
                 <thead>
                     <tr>
                         <td colspan="3"><span class="icon icon-list"></span> <span class="map-legend-name">Rurality Tiers</span>
-                            <button id="btn-closeLegend" class="btn btn-xs pull-right"><span class="icon icon-close"></span> <span class="sr-only">Hide legend</span></button>
+                            <button id="btn-closeLegend" class="close"><span class="close">&times;</span> <span class="sr-only">Hide legend</span></button>
                         </td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <div class="key-symbol" style="background-color:#828282"></div>
+                            <div class="key-symbol" style="background-color:#6F6F6F"></div>
                         </td>
                         <td>Extremely Rural</td>
                     </tr>
@@ -289,6 +339,8 @@
                 </tbody>
             </table>
         </div>
+
+
 
 
     
