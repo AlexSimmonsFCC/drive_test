@@ -125,13 +125,52 @@
       require(['esri/layers/VectorTileLayer',
         "esri/Map","esri/Graphic","esri/symbols/SimpleMarkerSymbol","esri/symbols/SimpleFillSymbol","esri/widgets/Legend","esri/tasks/Locator","esri/geometry/support/webMercatorUtils","esri/geometry/Point",
         "esri/views/MapView",
-        "esri/layers/FeatureLayer","esri/widgets/Search", "esri/widgets/Home","esri/tasks/support/Query", "esri/tasks/QueryTask", "dojo/domReady!"], 
+        "esri/layers/FeatureLayer","esri/widgets/Search", "esri/widgets/Home","esri/tasks/support/Query", "esri/tasks/QueryTask","esri/identity/OAuthInfo", "esri/identity/IdentityManager", "dojo/domReady!"], 
       
-      function(VectorTileLayer, Map, Graphic, SimpleMarkerSymbol, SimpleFillSymbol, Legend, Locator, webMercatorUtils, Point, MapView, FeatureLayer, Search, Home, Query, QueryTask) {
+      function(VectorTileLayer, Map, Graphic, SimpleMarkerSymbol, SimpleFillSymbol, Legend, Locator, webMercatorUtils, Point, MapView, FeatureLayer, Search, Home, Query,OAuthInfo, esriId, QueryTask) {
         var map = new Map({
           basemap: "dark-gray"
         });
 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+var info = new OAuthInfo({
+  appId: "fYbup4A0SaJmuhkv",
+  popup: false
+});
+
+esriId.registerOAuthInfos([info]);
+
+
+        
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      
+      
+      
+        
+        
         var view = new MapView({
           container: "viewDiv",
           map: map,
