@@ -6,7 +6,7 @@
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
-    <title>RHC Rurality Tiers</title>
+    <title>Drive Test</title>
 
     <link
       rel="stylesheet"
@@ -103,6 +103,147 @@
         left: 12px;
       }
 
+
+
+.button {
+  background-color: #E071B9;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button1 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #E071B9;
+  position: absolute;
+  z-index: 40;
+  top:-54px;
+  left:2px;
+}
+
+.button1:hover {
+  background-color: #E071B9;
+  color: white;
+}
+
+.button2 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+  position: absolute;
+  z-index: 40;
+  top:-54px;
+  left:92px;
+}
+
+.button2:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+.button3 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #f44336;
+  position: absolute;
+  z-index: 40;
+  top:-54px;
+  left:161px;
+}
+
+.button3:hover {
+  background-color: #f44336;
+  color: white;
+}
+
+.button4 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #F4CE14;
+  position: absolute;
+  z-index: 40;
+  top:-54px;
+  left:244px;
+}
+
+.button4:hover {
+  background-color: #F4CE14;
+  color: white;
+}
+
+
+p,
+label {
+  font:
+    1rem 'Fira Sans',
+    sans-serif;
+    font-size: 12px
+}
+
+input {
+  margin: 0.4rem;
+}
+
+
+
+
+.onoffswitch {
+    position: fixed; width: 110px; left: 60px; top: 88px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #212223; border-radius: 20px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.2s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "Stationary";
+    padding-left: 10px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "In Vehicle";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #222326;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 18px; margin: 6px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 0;
+    right: 75px;
+    border: 2px solid #212223; border-radius: 20px;
+    transition: all 0.2s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
+
+
+
+      
     </style>
 
   </head>
@@ -233,143 +374,6 @@ require(['esri/layers/VectorTileLayer',
 
 </script>
 
-
-
-
-.button {
-  background-color: #E071B9;
-  border: none;
-  color: white;
-  padding: 6px 12px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  transition-duration: 0.4s;
-  cursor: pointer;
-}
-
-.button1 {
-  background-color: white; 
-  color: black; 
-  border: 2px solid #E071B9;
-  position: absolute;
-  z-index: 40;
-  top:-54px;
-  left:2px;
-}
-
-.button1:hover {
-  background-color: #E071B9;
-  color: white;
-}
-
-.button2 {
-  background-color: white; 
-  color: black; 
-  border: 2px solid #008CBA;
-  position: absolute;
-  z-index: 40;
-  top:-54px;
-  left:92px;
-}
-
-.button2:hover {
-  background-color: #008CBA;
-  color: white;
-}
-
-.button3 {
-  background-color: white; 
-  color: black; 
-  border: 2px solid #f44336;
-  position: absolute;
-  z-index: 40;
-  top:-54px;
-  left:161px;
-}
-
-.button3:hover {
-  background-color: #f44336;
-  color: white;
-}
-
-.button4 {
-  background-color: white; 
-  color: black; 
-  border: 2px solid #F4CE14;
-  position: absolute;
-  z-index: 40;
-  top:-54px;
-  left:244px;
-}
-
-.button4:hover {
-  background-color: #F4CE14;
-  color: white;
-}
-
-
-p,
-label {
-  font:
-    1rem 'Fira Sans',
-    sans-serif;
-    font-size: 12px
-}
-
-input {
-  margin: 0.4rem;
-}
-
-
-
-
-
-
-.onoffswitch {
-    position: fixed; width: 110px; left: 60px; top: 88px;
-    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
-}
-.onoffswitch-checkbox {
-    display: none;
-}
-.onoffswitch-label {
-    display: block; overflow: hidden; cursor: pointer;
-    border: 2px solid #212223; border-radius: 20px;
-}
-.onoffswitch-inner {
-    display: block; width: 200%; margin-left: -100%;
-    transition: margin 0.2s ease-in 0s;
-}
-.onoffswitch-inner:before, .onoffswitch-inner:after {
-    display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
-    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
-    box-sizing: border-box;
-}
-.onoffswitch-inner:before {
-    content: "Stationary";
-    padding-left: 10px;
-    background-color: #34A7C1; color: #FFFFFF;
-}
-.onoffswitch-inner:after {
-    content: "In Vehicle";
-    padding-right: 10px;
-    background-color: #EEEEEE; color: #222326;
-    text-align: right;
-}
-.onoffswitch-switch {
-    display: block; width: 18px; margin: 6px;
-    background: #FFFFFF;
-    position: absolute; top: 0; bottom: 0;
-    right: 75px;
-    border: 2px solid #212223; border-radius: 20px;
-    transition: all 0.2s ease-in 0s; 
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-    margin-left: 0;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-    right: 0px; 
-}
+  </body>
+  
+</html>
