@@ -21,36 +21,32 @@
       html,
       body,
       
+             
       #viewDiv {
         padding: 0;
         margin: 0;
         height: 100%;
         width: 100%;
       }
-      
-      
+
+
       #helptext {
-        border-radius: 10px;
+        border-radius: 0px;
         position: fixed;
-        height: 70px;
+        height: 75px;
         font-family: arial;
         margin: 5px;
         padding: 10px;
-        z-index: 40;
+        z-index: 10;
         background: #D3D3D3;
         color: #444;
-        width: auto;
-        left: 65px;
-        top: 15px;
-        -moz-box-shadow: 0 0 10px #888;
-        -webkit-box-shadow: 0 0 10px #888;
-        box-shadow: 0 0 10px #888;
+        width: 150px;
+        left: 60px;
+        top: 125px;
         border-color: #212223;
-        border-width: 2px;
         border-style: solid;
-             } 
-      
-      
+             }
+
       #searchbar {
         bottom: 20px;
         height: 33px;
@@ -62,8 +58,7 @@
         z-index: 40;
         left: 85px;
       }
-      
-      
+
        #resultwindow {
         border-radius: 10px;
         position: fixed;
@@ -83,9 +78,7 @@
         border-color: #212223;
         border-width: 2px;
         border-style: solid;
-             } 
-      
-      
+             }
 
         #loadingbar {
         bottom: 20px;
@@ -98,8 +91,7 @@
         z-index: 40;
         left: 69px;
       }
-  
-  
+
       #show_legend_button {
         bottom: 25px;
         height: 28px;
@@ -111,73 +103,66 @@
         left: 12px;
       }
 
-
-
-
-     
-      
     </style>
 
-    <script>
+  </head>
+
+  <body>
+   <!-- <div id="helptext"><strong>&nbsp T-Mobile.</strong></div> -->
+    <div id="viewDiv"></div>
+    <div id="helptext">
+
+
+  <div>
+    <input type="checkbox" id="B1" name="B1" value="B1" checked />
+    <label for="huey">Selected Hexes</label>
+  </div>
+
+  <div>
+    <input type="checkbox" id="B2" name="B2" value="B2" checked/>
+    <label for="dewey">December 2022 477</label>
+  </div>
+
+  <div>
+    <input type="checkbox" id="B3" name="B3" value="B3" checked/>
+    <label for="louie">December 2023 477</label>
+  </div>
+
     
-     
     
-      require(['esri/layers/VectorTileLayer',
+    
+    <div id ="TableSwitch" class="onoffswitch">
+   
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked onclick = "HideAndShowTable()">
+    <label class="onoffswitch-label" for="myonoffswitch">
+    <span class="onoffswitch-inner"></span>
+    <span class="onoffswitch-switch"></span>
+        
+        
+       <input type="button" class="button button1" id="tmobile" value="T-Mobile" />
+       <input type="button" class="button button2" id="att" value="AT&T" />
+       <input type="button" class="button button3" id="verizon" value="Verizon" />
+       <input type="button" class="button button4" id="uscellular" value="U.S. Cellular" />
+  
+<script>
+
+require(['esri/layers/VectorTileLayer',
         "esri/Map","esri/Graphic","esri/symbols/SimpleMarkerSymbol","esri/symbols/SimpleFillSymbol","esri/widgets/Legend","esri/tasks/Locator","esri/geometry/support/webMercatorUtils","esri/geometry/Point",
         "esri/views/MapView",
-        "esri/layers/FeatureLayer","esri/widgets/Search", "esri/widgets/Home","esri/tasks/support/Query", "esri/tasks/QueryTask","esri/identity/OAuthInfo", "esri/identity/IdentityManager", "dojo/domReady!"], 
-      
+        "esri/layers/FeatureLayer","esri/widgets/Search", "esri/widgets/Home","esri/tasks/support/Query", "esri/tasks/QueryTask","esri/identity/OAuthInfo", "esri/identity/IdentityManager", "dojo/domReady!"],
+
       function(VectorTileLayer, Map, Graphic, SimpleMarkerSymbol, SimpleFillSymbol, Legend, Locator, webMercatorUtils, Point, MapView, FeatureLayer, Search, Home, Query, QueryTask, OAuthInfo, esriId) {
         var map = new Map({
           basemap: "dark-gray"
         });
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-// var info = new OAuthInfo({
-//   appId: "fYbup4A0SaJmuhkv",
-//   popup: false
-// });
-
-// esriId.registerOAuthInfos([info]);
-
-
-        
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-      
-      
-      
-        
-        
         var view = new MapView({
           container: "viewDiv",
           map: map,
           center: [-95.3, 38.397],
           zoom: 5
         });
-        
+
          var home = new Home({
          view: view
           }, "HomeButton");
@@ -186,203 +171,205 @@
          var template = {
         title: 'Rural Tier'
       }
-            
+
+
+
             // Instantiate Feature Layyer
-            var vectorTileLayer = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersVTL/VectorTileServer"}); 
-            var featureLayer = new FeatureLayer({url:"https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/RuralityTiersAgain/FeatureServer/0", 
+            var d22_att_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_22_ATT_VTL/VectorTileServer"});
+            var d23_att_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_23_ATT_VTL/VectorTileServer"});
+            var selected_hexes = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Selected_Hexes/VectorTileServer"});
+/*             var featureLayer = new FeatureLayer({url:"https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/brian_att_may/FeatureServer/0",
                                                  outFields: ['*'],
-                                                 visible:false,
-                                                 popupTemplate: template});
-            map.add(vectorTileLayer);
-            map.add(featureLayer);
-            
-
-           
-           var search = new Search({container: "searchbar"});
-           resultwindow.style.visibility='hidden';
-           loadingbar.style.visibility='hidden';
-           
-           
-        // Outer Function to Add Point and Retrieve Rurality Tier from Search Bar
-           search.on('search-complete', function(result){
-           
-            // Show Result Window
-            resultwindow.style.visibility='visible'
-              
-            if(result.results && result.results.length > 0 && result.results[0].results && result.results[0].results.length > 0){
-            var geom = result.results[0].results[0].feature.geometry;
-            }        
-            
-            // Set Text if No Rural Tier
-            document.getElementById("resultwindow").innerHTML = 'The address provided is not in a rural tier.';
-            
-            // Clear Point from Previous Query
-            view.graphics.removeAll();
-            
-            // Construct Point Symbol and Add it When Search Completes
-            var point = { type: "point",  longitude: geom.longitude, latitude: geom.latitude};
-            var markerSymbol = { type: "simple-marker",  color: [226, 119, 40]};
-            var pointGraphic = new Graphic({geometry: point, symbol: markerSymbol});
-            view.graphics.add(pointGraphic);
-            
-            // Zoom to New Point
-            view.goTo({center: [geom.longitude, geom.latitude], zoom: 10}, {animate: true, duration: 2000});
+                                                 visible:true,
+                                                 popupTemplate: template}); */
+            map.add(d22_att_vtl);
+            map.add(d23_att_vtl);
+            map.add(selected_hexes);
          
-            // Query to Retrieve Rurality Tier.
-            var query = featureLayer.createQuery();
-            query.outFields = ["Tier"];     
-            query.geometry = geom  
+
+            var B1 = document.getElementById('B1')
+            var B2 = document.getElementById('B2')
+            var B3 = document.getElementById('B3')
+
             
-            // Inner Function to Query the Layers and Set HTML Region with Result
-            featureLayer.queryFeatures(query).then(function(response){
-            var attribute = response.features[0].attributes;
-            console.log(response)
-            document.getElementById("resultwindow").innerHTML = "The address provided is located in a: " + "<span style='font-weight:bold; font-size:100%;' >"  + attribute["Tier"] + " Tier" + "</span>";
-            document.getElementById("info") = search;
-             });
-
-       }); 
-         
-     
-
-     
-     
-     
-     
-     
-      // Outer Function to Add Point and Retrieve Rurality Tier from Click Event
-          view.on('click', function (event) {
-          
-         loadingbar.style.visibility='visible';
-         resultwindow.style.visibility='hidden';
-          // Remove Graphics from Previous Click
-           view.graphics.removeAll();
-           
-          
-          // Get Coords on Mouse Click Location
-           var clickcoords = view.toMap({x: event.x, y: event.y});
-          
-          // Construct Point Symbol and Add to Click Location
-           var point = { type: "point",  longitude: clickcoords.longitude, latitude: clickcoords.latitude};
-           var markerSymbol = { type: "simple-marker",  color: [226, 119, 40]};
-           var pointGraphic = new Graphic({geometry: point, symbol: markerSymbol});
-           view.graphics.add(pointGraphic)
-         
-          // Query to Retrieve Rurality Tier.
-           var query = featureLayer.createQuery();
-           query.outFields = ["Tier"];     
-           query.geometry = clickcoords  
-
-
-          // Inner Function to Query the Layers, Get the Address, and Set HTML Region with Result
-           featureLayer.queryFeatures(query).then(function(response){
-           var attribute = response.features[0].attributes;
-           var locator = new Locator("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
-           var tier = attribute["Tier"]
-       
-           
+            // Toggle Layers 
             
-           if (tier.indexOf("None") >= 0) {
-           document.getElementById("resultwindow").innerHTML = 'The address provided is not in a rural tier.';
-           loadingbar.style.visibility='hidden';
-           resultwindow.style.visibility='visible';
-           }
-           else {
-           locator.locationToAddress(webMercatorUtils.webMercatorToGeographic(event.mapPoint), 100).then(function(event){
-            if (event.address) {
-              var address = {Address: event.address};
-              var location = webMercatorUtils.geographicToWebMercator(event.location)}
-              document.getElementById("resultwindow").innerHTML = address["Address"] + 
-              " is located in a: " + "<span style='font-weight:bold; font-size:100%;' >"  + attribute["Tier"] + 
-              " Tier" + "</span>"; 
-           loadingbar.style.visibility='hidden';
-           resultwindow.style.visibility='visible';
-              });
-             }; 
-           document.getElementById("info") = search;
-            });
+            B1.addEventListener('click', function(){
+            if (B1.checked == false){
+            selected_hexes.visible = false
+            }})
             
-       });
-       
-/* var slideSource = document.getElementById('resultwindow');
+            B1.addEventListener('click', function(){
+            if (B1.checked == true){
+            selected_hexes.visible = true
+            }})
+            
+            B2.addEventListener('click', function(){
+            if (B2.checked == false){
+            d22_att_vtl.visible = false
+            }})
+            
+            B2.addEventListener('click', function(){
+            if (B2.checked == true){
+            d22_att_vtl.visible = true
+            }})
+            
+            B3.addEventListener('click', function(){
+            if (B3.checked == false){
+            d23_att_vtl.visible = false
+            }})
+            
+            B3.addEventListener('click', function(){
+            if (B3.checked == true){
+            d23_att_vtl.visible = true
+            }})
+            
 
-document.getElementById('btn-closeLegend').onclick = function () {
-  legend.style.visibility='hidden';
-  console.log('hi');
-} */
-   
-       
+
   });
-     
-     
-$(document).ready(function(){
-  $('#btn-closeLegend').click(function(){
-    $("#legend").fadeOut("medium");
-    $("#show_legend_button").fadeIn("medium");
-  });
-});
-
-$(document).ready(function(){
-  $('#show_legend_button').click(function(){
-    $("#legend").fadeIn("medium");
-    $("#show_legend_button").fadeOut("medium");
-  });
-});
-
-      
-   
-      
- 
-      
-    </script>
-  </head>
-
-  <body>
-    <div id="helptext"><strong>&nbspClick The Map or Enter an Address Below to Retrieve Your Rurality Tier.</strong></div>
-    <div id="searchbar"></div>
-    <div id="resultwindow"></div>
-    <div id="loadingbar" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-    <div id="viewDiv"></div>  
-    <button id = "show_legend_button" style="display:none" class = "close_legend_button"><i class="fa fa-bars"></i></button><br><br>
-
-
-       <div id ="legend" class="map-legend">
-            <table>
-                <thead>
-                    <tr>
-                        <td colspan="3"><span class="icon icon-list"></span> <span class="map-legend-name">Rurality Tiers</span>
-                            <button id="btn-closeLegend" class="close"><span class="close">&times;</span> <span class="sr-only">Hide legend</span></button>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#6F6F6F"></div>
-                        </td>
-                        <td>Extremely Rural</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#803535 "></div>
-                        </td>
-                        <td>Less Rural</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="key-symbol" style="background-color:#329AAF"></div>
-                        </td>
-                        <td>Rural</td>
-                    </tr>
-     
-                </tbody>
-            </table>
-        </div>
 
 
 
 
-    
-  </body>
-  
-</html>
+</script>
+
+
+
+
+.button {
+  background-color: #E071B9;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button1 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #E071B9;
+  position: absolute;
+  z-index: 40;
+  top:-54px;
+  left:2px;
+}
+
+.button1:hover {
+  background-color: #E071B9;
+  color: white;
+}
+
+.button2 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+  position: absolute;
+  z-index: 40;
+  top:-54px;
+  left:92px;
+}
+
+.button2:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+.button3 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #f44336;
+  position: absolute;
+  z-index: 40;
+  top:-54px;
+  left:161px;
+}
+
+.button3:hover {
+  background-color: #f44336;
+  color: white;
+}
+
+.button4 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #F4CE14;
+  position: absolute;
+  z-index: 40;
+  top:-54px;
+  left:244px;
+}
+
+.button4:hover {
+  background-color: #F4CE14;
+  color: white;
+}
+
+
+p,
+label {
+  font:
+    1rem 'Fira Sans',
+    sans-serif;
+    font-size: 12px
+}
+
+input {
+  margin: 0.4rem;
+}
+
+
+
+
+
+
+.onoffswitch {
+    position: fixed; width: 110px; left: 60px; top: 88px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #212223; border-radius: 20px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.2s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "Stationary";
+    padding-left: 10px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "In Vehicle";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #222326;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 18px; margin: 6px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 0;
+    right: 75px;
+    border: 2px solid #212223; border-radius: 20px;
+    transition: all 0.2s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
