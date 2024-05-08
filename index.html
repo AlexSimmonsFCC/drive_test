@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="css/styles.css">
 
     <style>
-      html,
+            html,
       body,
       
              
@@ -131,7 +131,7 @@
 
 .button1:hover {
   background-color: #E071B9;
-  color: white;
+  color: black;
 }
 
 .button2 {
@@ -146,7 +146,7 @@
 
 .button2:hover {
   background-color: #008CBA;
-  color: white;
+  color: black;
 }
 
 .button3 {
@@ -161,7 +161,7 @@
 
 .button3:hover {
   background-color: #f44336;
-  color: white;
+  color: black;
 }
 
 .button4 {
@@ -176,7 +176,7 @@
 
 .button4:hover {
   background-color: #F4CE14;
-  color: white;
+  color: black;
 }
 
 
@@ -243,10 +243,9 @@ input {
 
 
 
-      
     </style>
 
-  </head>
+ </head>
 
   <body>
    <!-- <div id="helptext"><strong>&nbsp T-Mobile.</strong></div> -->
@@ -280,10 +279,10 @@ input {
     <span class="onoffswitch-switch"></span>
         
         
-       <input type="button" class="button button1" id="tmobile" value="T-Mobile" />
-       <input type="button" class="button button2" id="att" value="AT&T" />
-       <input type="button" class="button button3" id="verizon" value="Verizon" />
-       <input type="button" class="button button4" id="uscellular" value="U.S. Cellular" />
+       <input type="button" class="button button1" id="PB1" value="T-Mobile" />
+       <input type="button" class="button button2" id="PB2" value="AT&T" />
+       <input type="button" class="button button3" id="PB3" value="Verizon" />
+       <input type="button" class="button button4" id="PB4" value="U.S. Cellular" />
   
 <script>
 
@@ -300,8 +299,8 @@ require(['esri/layers/VectorTileLayer',
         var view = new MapView({
           container: "viewDiv",
           map: map,
-          center: [-89.08, 42.26],
-          zoom: 9
+          center: [-89.0225, 42.681],
+          zoom: 11
         });
 
          var home = new Home({
@@ -313,61 +312,244 @@ require(['esri/layers/VectorTileLayer',
         title: 'Rural Tier'
       }
 
+//       // Configure Okta 
+//  const clientId = 'x1GHZYw3t3zpV7wt';
+// const redirectUri = 'file:///C:/Work/Brian_Maps/index.html';
+// const signInButton = document.getElementById('sign-in');
+// // do this on a button click to avoid popup blockers
+// document.addEventListener('click', function(){
+//     window.open('https://www.arcgis.com/sharing/rest/oauth2/authorize?client_id='+clientId+'&response_type=token&expiration=20160&redirect_uri=' + window.encodeURIComponent(redirectUri), 'oauth-window', 'height=400,width=600,menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes')
+// });
 
 
             // Instantiate Feature Layyer
-            var d22_att_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_22_ATT_VTL/VectorTileServer"});
-            var d23_att_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_23_ATT_VTL/VectorTileServer"});
-            var selected_hexes = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Selected_Hexes/VectorTileServer"});
-/*             var featureLayer = new FeatureLayer({url:"https://services.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/brian_att_may/FeatureServer/0",
-                                                 outFields: ['*'],
-                                                 visible:true,
-                                                 popupTemplate: template}); */
+            var d22_att_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_22_ATT_VTL/VectorTileServer",visible:false});
+            var d23_att_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_23_ATT_VTL/VectorTileServer",visible:false});
+            var selected_hexes = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Selected_Hexes/VectorTileServer",visible:false});
+            
+            var d22_verizon_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_22_Verizon_VTL/VectorTileServer",visible:false});
+            var d23_verizon_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_23_Verizon_VTL/VectorTileServer",visible:false});
+            var selected_hexes_verizon = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/selected_hexes_usc/VectorTileServer",visible:false});
+            
+            var d22_usc_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/d23_usc_vtl/VectorTileServer",visible:false});
+            var d23_usc_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/d23_usc_vtl/VectorTileServer",visible:false});
+            var selected_hexes_usc = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/selected_hexes_usc/VectorTileServer",visible:false});            
+            
+            var d22_tmobile_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_22_TMobile_VTL/VectorTileServer",visible:true});
+            var d23_tmobile_vtl = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Dec_23_TMobile_VTL/VectorTileServer",visible:true});
+            var selected_hexes_tmobile = new VectorTileLayer({url:"https://tiles.arcgis.com/tiles/YnOQrIGdN9JGtBh4/arcgis/rest/services/Selected_Hexes_TMobile/VectorTileServer",visible:true});
+
+            var test = new VectorTileLayer({url:"https://vectortileservices.arcgis.com/YnOQrIGdN9JGtBh4/arcgis/rest/services/ATT_Drive_Tests/VectorTileServer", visible:true})
+
+            // Add Map Layers
             map.add(d22_att_vtl);
             map.add(d23_att_vtl);
             map.add(selected_hexes);
+            map.add(d22_tmobile_vtl);
+            map.add(d23_tmobile_vtl);
+            map.add(selected_hexes_tmobile);
+            map.add(d22_verizon_vtl);
+            map.add(d23_verizon_vtl);
+            map.add(selected_hexes_verizon);
+            map.add(d22_usc_vtl);
+            map.add(d23_usc_vtl);
+            map.add(selected_hexes_usc);
+            map.add(test);            
          
-
+            // Declare variables
             var B1 = document.getElementById('B1')
             var B2 = document.getElementById('B2')
             var B3 = document.getElementById('B3')
+            
+            var PB1 = document.getElementById('PB1')
+            var PB2 = document.getElementById('PB2')
+            var PB3 = document.getElementById('PB3')
+            var PB4 = document.getElementById('PB4')
+
+            // Set TMobile as selected on default and configure the rest of the provider buttons
+           window.addEventListener("load", (event) => {
+           PB1.style.background = "#E071B9"
+           PB1.checked = true
+           });
+           
+           PB1.addEventListener('click', function(){
+           PB1.checked = true
+           PB2.checked = false
+           PB3.checked = false
+           PB4.checked = false
+           B1.checked = true
+           B2.checked = true
+           B3.checked = true
+           PB1.style.backgroundColor = "#E071B9"
+           PB2.style.backgroundColor = "#FFFFFF"
+           PB3.style.backgroundColor = "#FFFFFF"
+           PB4.style.backgroundColor = "#FFFFFF"
+           d22_tmobile_vtl.visible = true
+           d23_tmobile_vtl.visible = true
+           selected_hexes_tmobile.visible = true
+           d22_att_vtl.visible = false
+           d23_att_vtl.visible = false
+           selected_hexes.visible = false
+           d22_verizon_vtl.visible = false
+           d23_verizon_vtl.visible = false
+           selected_hexes_verizon.visible = false
+           d22_usc_vtl.visible = false
+           d23_usc_vtl.visible = false
+           selected_hexes_usc.visible = false           
+           })
+           
+           PB2.addEventListener('click', function(){
+           PB1.checked = false
+           PB2.checked = true
+           PB3.checked = false
+           PB4.checked = false
+           B1.checked = true
+           B2.checked = true
+           B3.checked = true
+           PB1.style.background = "#FFFFFF"
+           PB2.style.backgroundColor = "#008CBA"
+           PB3.style.backgroundColor = "#FFFFFF"
+           PB4.style.backgroundColor = "#FFFFFF"
+           d22_att_vtl.visible = true
+           d23_att_vtl.visible = true
+           selected_hexes.visible = true
+           d22_tmobile_vtl.visible = false
+           d23_tmobile_vtl.visible = false
+           selected_hexes_tmobile.visible = false
+           d22_verizon_vtl.visible = false
+           d23_verizon_vtl.visible = false
+           selected_hexes_verizon.visible = false
+           d22_usc_vtl.visible = false
+           d23_usc_vtl.visible = false
+           selected_hexes_usc.visible = false
+           })
+           
+           PB3.addEventListener('click', function(){
+           PB1.checked = false
+           PB2.checked = false
+           PB3.checked = true
+           PB4.checked = false
+           B1.checked = true
+           B2.checked = true
+           B3.checked = true
+           PB1.style.background = "#FFFFFF"
+           PB2.style.backgroundColor = "#FFFFFF"
+           PB3.style.backgroundColor = "#f44336"
+           PB4.style.backgroundColor = "#FFFFFF"
+           d22_att_vtl.visible = false
+           d23_att_vtl.visible = false
+           selected_hexes.visible = false
+           d22_tmobile_vtl.visible = false
+           d23_tmobile_vtl.visible = false
+           selected_hexes_tmobile.visible = false
+           d22_verizon_vtl.visible = true
+           d23_verizon_vtl.visible = true
+           selected_hexes_verizon.visible = true
+           d22_usc_vtl.visible = false
+           d23_usc_vtl.visible = false
+           selected_hexes_usc.visible = false
+           })           
+           
+           PB4.addEventListener('click', function(){
+           PB1.checked = false
+           PB2.checked = false
+           PB3.checked = false
+           PB4.checked = true
+           B1.checked = true
+           B2.checked = true
+           B3.checked = true
+           PB1.style.background = "#FFFFFF"
+           PB2.style.backgroundColor = "#FFFFFF"
+           PB3.style.backgroundColor = "#FFFFFF"
+           PB4.style.backgroundColor = "#F4CE14"
+           d22_att_vtl.visible = false
+           d23_att_vtl.visible = false
+           selected_hexes.visible = false
+           d22_tmobile_vtl.visible = false
+           d23_tmobile_vtl.visible = false
+           selected_hexes_tmobile.visible = false
+           d22_verizon_vtl.visible = false
+           d23_verizon_vtl.visible = false
+           selected_hexes_verizon.visible = false
+           d22_usc_vtl.visible = true
+           d23_usc_vtl.visible = true
+           selected_hexes_usc.visible = true
+           })   
+           
+           
 
             
             // Toggle Layers 
             
             B1.addEventListener('click', function(){
-            if (B1.checked == false){
-            selected_hexes.visible = false
-            }})
+            if (B1.checked == false & PB1.checked == true){
+            selected_hexes_tmobile.visible = false}
+            if (B1.checked == true & PB1.checked == true){
+            selected_hexes_tmobile.visible = true}
             
-            B1.addEventListener('click', function(){
-            if (B1.checked == true){
-            selected_hexes.visible = true
-            }})
+            if (B1.checked == false & PB2.checked == true){
+            selected_hexes.visible = false}
+            if (B1.checked == true & PB2.checked == true){
+            selected_hexes.visible = true}
             
+            if (B1.checked == false & PB3.checked == true){
+            selected_hexes_verizon.visible = false}
+            if (B1.checked == true & PB3.checked == true){
+            selected_hexes_verizon.visible = true}
+            
+            if (B1.checked == false & PB4.checked == true){
+            selected_hexes_usc.visible = false}
+            if (B1.checked == true & PB4.checked == true){
+            selected_hexes_usc.visible = true}
+            })  
             B2.addEventListener('click', function(){
-            if (B2.checked == false){
-            d22_att_vtl.visible = false
-            }})
+            if (B2.checked == false & PB1.checked == true){
+            d22_tmobile_vtl.visible = false}
+            if (B2.checked == true & PB1.checked == true){
+            d22_tmobile_vtl.visible = true}
             
-            B2.addEventListener('click', function(){
-            if (B2.checked == true){
-            d22_att_vtl.visible = true
-            }})
+            if (B2.checked == false & PB2.checked == true){
+            d22_att_vtl.visible = false}
+            if (B2.checked == true & PB2.checked == true){
+            d22_att_vtl.visible = true}
             
+            if (B2.checked == false & PB3.checked == true){
+            d22_verizon_vtl.visible = false}
+            if (B2.checked == true & PB3.checked == true){
+            d22_verizon_vtl.visible = true}
+            
+            if (B2.checked == false & PB4.checked == true){
+            d22_usc_vtl.visible = false}
+            if (B2.checked == true & PB4.checked == true){
+            d22_usc_vtl.visible = true}
+            })
             B3.addEventListener('click', function(){
-            if (B3.checked == false){
-            d23_att_vtl.visible = false
-            }})
+            if (B3.checked == false & PB1.checked == true){
+            d23_tmobile_vtl.visible = false}
+            if (B3.checked == true & PB1.checked == true){
+            d23_tmobile_vtl.visible = true}
             
-            B3.addEventListener('click', function(){
-            if (B3.checked == true){
-            d23_att_vtl.visible = true
-            }})
+            if (B3.checked == false & PB2.checked == true){
+            d23_att_vtl.visible = false}
+            if (B3.checked == true & PB2.checked == true){
+            d23_att_vtl.visible = true}
+            
+            if (B3.checked == false & PB3.checked == true){
+            d23_verizon_vtl.visible = false}
+            if (B3.checked == true & PB3.checked == true){
+            d23_verizon_vtl.visible = true}
+            
+            if (B3.checked == false & PB4.checked == true){
+            d23_usc_vtl.visible = false}
+            if (B3.checked == true & PB4.checked == true){
+            d23_usc_vtl.visible = true}
+            })
             
 
 
   });
+
+
 
 
 
@@ -377,3 +559,12 @@ require(['esri/layers/VectorTileLayer',
   </body>
   
 </html>
+
+
+
+
+
+
+
+
+
